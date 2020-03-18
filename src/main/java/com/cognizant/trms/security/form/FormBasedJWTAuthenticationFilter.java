@@ -22,7 +22,7 @@ import java.util.List;
 import static com.cognizant.trms.security.SecurityConstants.*;
 
 /**
- * Created by Arpit Khandelwal.
+ * Aravindan Dandapani
  */
 public class FormBasedJWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;

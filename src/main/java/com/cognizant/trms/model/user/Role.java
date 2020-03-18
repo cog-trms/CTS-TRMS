@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * Created by Arpit Khandelwal.
+ * Aravindan Dandapani
  */
 @Getter
 @Setter

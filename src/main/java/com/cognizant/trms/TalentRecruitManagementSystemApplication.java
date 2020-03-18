@@ -26,7 +26,7 @@ public class TalentRecruitManagementSystemApplication {
     @Bean
     CommandLineRunner init(RoleRepository roleRepository, UserRepository userRepository) {
         return args -> {
-            //Create Admin and Passenger Roles
+            //Create Admin and Hiring Manager Roles
             Role adminRole = roleRepository.findByRole("ADMIN");
             if (adminRole == null) {
                 adminRole = new Role();

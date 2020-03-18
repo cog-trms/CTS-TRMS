@@ -1,7 +1,7 @@
 package com.cognizant.trms.util;
 
 /**
- * Created by Arpit Khandelwal.
+ * Aravindan Dandapani
  */
 public class RandomStringUtil {
     // function to generate a random string of length n

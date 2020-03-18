@@ -1,7 +1,7 @@
 package com.cognizant.trms.security;
 
 /**
- * Created by Arpit Khandelwal.
+ * Aravindan Dandapani
  */
 public interface SecurityConstants {
     String SECRET = "SecretKeyToGenJWTs";

@@ -4,7 +4,7 @@ import com.cognizant.trms.model.user.Role;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
- * Created by Arpit Khandelwal.
+ * Aravindan Dandapani
  */
 public interface RoleRepository extends MongoRepository<Role, String> {
 

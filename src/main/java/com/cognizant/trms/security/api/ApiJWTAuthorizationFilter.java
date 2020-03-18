@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import static com.cognizant.trms.security.SecurityConstants.*;
 
 /**
- * Created by Arpit Khandelwal.
+ * Aravindan Dandapani
  */
 public class ApiJWTAuthorizationFilter extends BasicAuthenticationFilter {
     public ApiJWTAuthorizationFilter(AuthenticationManager authManager) {
