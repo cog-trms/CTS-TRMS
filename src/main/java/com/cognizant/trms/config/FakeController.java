@@ -42,9 +42,9 @@ public class FakeController {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     private static class LoginRequest{
-        @NotNull(message = "{constraints.NotEmpty.message}")
+        @NotNull(message = "Email can not be blank")
         private String email;
-        @NotNull(message = "{constraints.NotEmpty.message}")
+        @NotNull(message = "Password can not be blank")
         private String password;
     }
 }

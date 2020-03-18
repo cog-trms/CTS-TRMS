@@ -1,6 +1,7 @@
 package com.cognizant.trms.controller.v1.api;
 
 import com.cognizant.trms.controller.v1.request.UserSignupRequest;
+import com.cognizant.trms.dto.model.user.SpringUser;
 import com.cognizant.trms.dto.model.user.UserDto;
 import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.service.UserService;
@@ -8,9 +9,17 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Aravindan Dandapani
@@ -39,6 +48,21 @@ public class UserController {
         return Response
                 .ok()
                 .setPayload(userService.listUsers());
+    }
+
+    @GetMapping("/getTokenDetails")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getTokenDetails(){
+      Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       SpringUser user = new SpringUser();
+       user.setUsername(principal.toString());
+        List<String> roles = new ArrayList<>();
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().forEach(authority -> roles.add(authority.getAuthority()));
+        user.setAuthorities(roles);
+     return Response
+                .ok()
+                .setPayload(user);
+
     }
 
     /**
