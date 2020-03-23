@@ -2,6 +2,7 @@ package com.cognizant.trms.security;
 
 import com.cognizant.trms.dto.model.user.RoleDto;
 import com.cognizant.trms.dto.model.user.UserDto;
+import com.cognizant.trms.dto.model.user.User_Role_Dto;
 import com.cognizant.trms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("user with email " + email + " does not exist.");
         }
     }
+
 
     private List<GrantedAuthority> getUserAuthority(Set<RoleDto> userRoles) {
         Set<GrantedAuthority> roles = new HashSet<>();

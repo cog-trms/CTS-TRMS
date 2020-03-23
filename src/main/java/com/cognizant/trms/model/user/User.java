@@ -35,8 +35,15 @@ public class User {
 
     private String mobileNumber;
 
+//    @DBRef
+//    private Set<Role> roles;
+
+    @DBRef
+    private Set<UserRole> userroles;
+
     @DBRef
     private Set<Role> roles;
+
 
     public String getFullName() {
         return firstName != null ? firstName.concat(" ").concat(lastName) : "";

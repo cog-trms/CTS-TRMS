@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
             if (userDto.isAdmin()) {
                 userRole = roleRepository.findByRole(UserRoles.ADMIN.name());
             } else {
-                userRole = roleRepository.findByRole(UserRoles.HIRING_MANAGER.name());
+                userRole = roleRepository.findByRole(UserRoles.UN_ASSIGNED.name());
             }
             user = new User()
                     .setEmail(userDto.getEmail())
