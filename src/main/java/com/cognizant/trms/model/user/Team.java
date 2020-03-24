@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Set;
+
 /*
     Author: Aravindan Dandapani
 */
@@ -27,4 +29,6 @@ public class Team {
     private String teamName;
     @DBRef(lazy = true)
     private Program program;
+    @DBRef(lazy = true)
+    private Set<User> teamMembers;
 }
