@@ -8,23 +8,20 @@ import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.model.user.User;
 import com.cognizant.trms.repository.user.UserRepository;
 import com.cognizant.trms.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.deploy.net.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.*;
 
@@ -35,6 +32,7 @@ import java.util.*;
 @RequestMapping("/api/v1/user")
 @Api(value="trms-application", description="Operations pertaining to user management in the TRMS application")
 public class UserController {
+    private static final Logger log = LogManager.getLogger(UserController.class);
     @Autowired
     private UserService userService;
 
@@ -48,7 +46,11 @@ public class UserController {
      * @return
      */
     @PostMapping("/signup")
-    public Response signup(@RequestBody @Valid UserSignupRequest userSignupRequest) {
+    public Response signup(@RequestBody @Valid UserSignupRequest userSignupRequest) throws JsonProcessingException {
+        log.info("user signup");
+        ObjectMapper mapper = new ObjectMapper();
+        String reqString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userSignupRequest);
+        log.debug("Request object " + reqString);
         return Response.ok().setPayload(registerUser(userSignupRequest, false));
     }
 
