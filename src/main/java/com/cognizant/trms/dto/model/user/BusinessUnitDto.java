@@ -18,7 +18,12 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BusinessUnitDto {
+public class BusinessUnitDto implements Comparable {
     private String id;
     private String buName;
+
+    @Override
+    public int compareTo(Object o) {
+        return this.getBuName().compareTo(((BusinessUnitDto) o).getBuName());
+    }
 }

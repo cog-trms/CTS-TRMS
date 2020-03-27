@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<UserDto> listUsers() throws JsonProcessingException {
-       log.debug("Service Layer - LIST ALL USERS "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userRepository.findAll()));
+      // log.debug("Service Layer - LIST ALL USERS "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userRepository.findAll()));
         return userRepository.findAll()
                 .stream()
                 .filter(Objects::nonNull)

@@ -105,7 +105,7 @@ public class UserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         boolean authorized = authorities.contains(new SimpleGrantedAuthority("ADMIN"));
-        System.out.println("Authorized :"+ authorized);
+        log.debug("Is Admin User? :"+ authorized);
         if(authorized) {
             Optional<User> userProfile = userRepository.findById(id);
             if (userProfile.isPresent()) {
