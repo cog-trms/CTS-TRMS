@@ -18,12 +18,7 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User_Role_Dto {
-
+public class BusinessUnitDto {
     private String id;
-    private String user_id;
-    private String role_id;
-    private String account_id;
-    private String program_id;
-    private String team_id;
+    private String buName;
 }

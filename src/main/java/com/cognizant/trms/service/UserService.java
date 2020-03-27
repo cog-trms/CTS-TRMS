@@ -1,6 +1,7 @@
 package com.cognizant.trms.service;
 
 import com.cognizant.trms.dto.model.user.UserDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
 import java.util.Set;
@@ -41,5 +42,5 @@ public interface UserService {
      */
     UserDto changePassword(UserDto userDto, String newPassword);
 
-    Set<UserDto> listUsers();
+    Set<UserDto> listUsers() throws JsonProcessingException;
 }

@@ -2,7 +2,6 @@ package com.cognizant.trms.security;
 
 import com.cognizant.trms.dto.model.user.RoleDto;
 import com.cognizant.trms.dto.model.user.UserDto;
-import com.cognizant.trms.dto.model.user.User_Role_Dto;
 import com.cognizant.trms.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

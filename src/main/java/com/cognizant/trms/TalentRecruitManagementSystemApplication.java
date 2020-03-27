@@ -2,7 +2,6 @@ package com.cognizant.trms;
 
 import com.cognizant.trms.model.user.*;
 import com.cognizant.trms.repository.user.*;
-import com.cognizant.trms.util.DateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.CommandLineRunner;
@@ -49,7 +48,9 @@ public class TalentRecruitManagementSystemApplication {
                 adminRole = new Role();
                 adminRole.setRole(UserRoles.ADMIN.name());
                 roleRepository.save(adminRole);
+
             }
+
 
             Role hmRole = roleRepository.findByRole(UserRoles.HIRING_MANAGER.name());
             if (hmRole == null) {
@@ -94,6 +95,24 @@ public class TalentRecruitManagementSystemApplication {
                         .setRoles(new HashSet<>(Arrays.asList(adminRole)));
                 userRepository.save(admin);
             }
+            UserRole adminUserRole = new UserRole()
+                    .setRoleId(adminRole.getId())
+                    .setUserid(admin.getId());
+            userRoleRepository.save(adminUserRole);
+
+            Optional<User> adminUser = userRepository.findById(admin.getId());
+            if (adminUser.isPresent()){
+
+                Set<Role> roles = new HashSet<>();
+                adminUser.get().setRoles(roles);
+                adminUser.get().getRoles().add(adminRole);
+                Set<UserRole> userroles = new HashSet<>();
+                adminUser.get().setUserroles(userroles);
+                adminUser.get().getUserroles().add(adminUserRole);
+                userRepository.save(adminUser.get());
+            }
+
+
 
 
             //Create an HiringManager/AccountManager
@@ -153,15 +172,16 @@ public class TalentRecruitManagementSystemApplication {
                 account = new Account();
                 account.setAccountName("Pearson");
                 account.setBusinessUnit(businessUnit);
-                account.setAccountMgr(hiringManager);
+                account.setUser(hiringManager);
                 accountRepository.save(account);
 
                 UserRole userRoles = userRoleRepository.findByuserid(hiringManager.getId());
                 if(userRoles == null){
                     userRoles = new UserRole()
                             .setUserid(hiringManager.getId())
-                            .setRole_id(hmRole.getId())
-                            .setAccount(account);
+                            .setRoleId(hmRole.getId());
+                    //        .setAccount(account)
+
                     userRoleRepository.save(userRoles);
                 }
                 Optional<User> hm = userRepository.findById(hiringManager.getId());
@@ -189,9 +209,10 @@ public class TalentRecruitManagementSystemApplication {
                 if(pmUserRoles == null){
                     pmUserRoles = new UserRole()
                             .setUserid(programManager.getId())
-                            .setRole_id(pmRole.getId())
-                            .setAccount(account)
-                            .setProgram(gpProgram);
+                            .setRoleId(pmRole.getId());
+                          //  .setAccount(account)
+                          //  .setProgram(gpProgram)
+
                     userRoleRepository.save(pmUserRoles);
                 }
 
@@ -222,10 +243,11 @@ public class TalentRecruitManagementSystemApplication {
                 if(tmRoles == null){
                     tmRoles = new UserRole()
                             .setUserid(teamMember1.getId())
-                            .setRole_id(tmRole.getId())
-                            .setAccount(account)
-                            .setProgram(gpProgram)
-                            .setTeam(plaTeam);
+                            .setRoleId(tmRole.getId());
+                           // .setAccount(account)
+                            //.setProgram(gpProgram)
+                            //.setTeam(plaTeam)
+
                     userRoleRepository.save(tmRoles);
                 }
                 Optional<User> tm1 = userRepository.findById(teamMember1.getId());
@@ -254,10 +276,11 @@ public class TalentRecruitManagementSystemApplication {
                 if(tmRoles2 == null){
                     tmRoles2 = new UserRole()
                             .setUserid(teamMember2.getId())
-                            .setRole_id(tmRole.getId())
-                            .setAccount(account)
-                            .setProgram(gpProgram)
-                            .setTeam(plaTeam);
+                            .setRoleId(tmRole.getId());
+                           // .setAccount(account)
+                            //.setProgram(gpProgram)
+                            //.setTeam(plaTeam)
+
                     userRoleRepository.save(tmRoles2);
                 }
                 Optional<User> tm2 = userRepository.findById(teamMember2.getId());

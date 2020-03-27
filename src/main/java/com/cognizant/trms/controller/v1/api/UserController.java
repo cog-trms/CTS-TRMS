@@ -39,6 +39,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+   private ObjectMapper mapper;
+
     /**
      * Handles the incoming POST API "/v1/user/signup"
      *
@@ -48,7 +51,7 @@ public class UserController {
     @PostMapping("/signup")
     public Response signup(@RequestBody @Valid UserSignupRequest userSignupRequest) throws JsonProcessingException {
         log.info("user signup");
-        ObjectMapper mapper = new ObjectMapper();
+
         String reqString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userSignupRequest);
         log.debug("Request object " + reqString);
         return Response.ok().setPayload(registerUser(userSignupRequest, false));
@@ -56,7 +59,8 @@ public class UserController {
 
     @GetMapping("/listUsers")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response listUsers(){
+    public Response listUsers() throws JsonProcessingException {
+        log.debug("Controller layer - LIST ALL USERS "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userService.listUsers()));
         return Response
                 .ok()
                 .setPayload(userService.listUsers());

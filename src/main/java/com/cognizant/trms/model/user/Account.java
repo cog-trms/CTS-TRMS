@@ -30,9 +30,10 @@ public class Account {
     private String id;
 
     private String accountName;
+    @DBRef
+    private User user;
     @DBRef(lazy = true)
     private BusinessUnit businessUnit;
-    @DBRef(lazy = true)
-    private User accountMgr;
+
 }
 

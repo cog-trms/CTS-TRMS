@@ -8,9 +8,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-/**
- * Aravindan Dandapani
- */
+/*
+    Author: Aravindan Dandapani
+*/
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -18,7 +18,19 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RoleDto {
+public class AccountDto implements Comparable {
+
     private String id;
-    private String role;
+    private String accountName;
+    private UserDto user;
+    private BusinessUnitDto businessUnit;
+
+
+
+    @Override
+    public int compareTo(Object o) {
+        {
+            return this.getAccountName().compareTo(((AccountDto) o).getAccountName());
+        }
+    }
 }
