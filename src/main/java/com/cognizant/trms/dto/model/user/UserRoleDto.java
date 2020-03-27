@@ -8,9 +8,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-/**
- * Aravindan Dandapani
- */
+/*
+    Author: Aravindan Dandapani
+*/
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -18,7 +18,12 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RoleDto {
+public class UserRoleDto {
+
     private String id;
-    private String role;
+    private String userId;
+    private String roleId;
+//    private String account_id;
+//    private String program_id;
+//    private String team_id;
 }

@@ -38,10 +38,10 @@ public class User {
 //    @DBRef
 //    private Set<Role> roles;
 
-    @DBRef
+    @DBRef(lazy = true)
     private Set<UserRole> userroles;
 
-    @DBRef
+    @DBRef(lazy = true)
     private Set<Role> roles;
 
 

@@ -10,6 +10,10 @@ import com.cognizant.trms.model.user.User;
 import com.cognizant.trms.model.user.UserRoles;
 import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
  */
 @Component
 public class UserServiceImpl implements UserService {
+    private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -35,6 +40,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public UserDto signup(UserDto userDto) {
@@ -110,10 +118,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<UserDto> listUsers() {
+    public Set<UserDto> listUsers() throws JsonProcessingException {
+       log.debug("Service Layer - LIST ALL USERS "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userRepository.findAll()));
         return userRepository.findAll()
                 .stream()
-                .map(userM -> modelMapper.map(userM, UserDto.class))
+                .filter(Objects::nonNull)
+                .map(userM -> UserMapper.toUserDto(userM))
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
