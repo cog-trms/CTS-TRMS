@@ -32,7 +32,7 @@ public class Account {
     private String accountName;
     @DBRef
     private User user;
-    @DBRef(lazy = true)
+   @DBRef(lazy = true)
     private BusinessUnit businessUnit;
 
 }

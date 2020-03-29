@@ -5,6 +5,9 @@ package com.cognizant.trms.exception;
  */
 public enum EntityType {
     USER,
-    ROLE
-
+    ROLE,
+    PROGRAM,
+    ACCOUNT,
+    BU,
+    PROGRAM_MGR
 }
