@@ -73,6 +73,12 @@ public class TRMSException {
         }
     }
 
+    public static class AccessDeniedException extends RuntimeException {
+        public AccessDeniedException(String message) {
+            super(message);
+        }
+    }
+
     /**
      * Returns new RuntimeException based on template and args
      *
@@ -85,6 +91,9 @@ public class TRMSException {
             return new EntityNotFoundException(format(messageTemplate, args));
         } else if (ExceptionType.DUPLICATE_ENTITY.equals(exceptionType)) {
             return new DuplicateEntityException(format(messageTemplate, args));
+        }
+        else if (ExceptionType.ACCESS_DENIED.equals(exceptionType)) {
+            return new AccessDeniedException(format(messageTemplate, args));
         }
         return new RuntimeException(format(messageTemplate, args));
     }

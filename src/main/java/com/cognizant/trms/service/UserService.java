@@ -43,4 +43,5 @@ public interface UserService {
     UserDto changePassword(UserDto userDto, String newPassword);
 
     Set<UserDto> listUsers() throws JsonProcessingException;
+    boolean deleteUser(String id);
 }

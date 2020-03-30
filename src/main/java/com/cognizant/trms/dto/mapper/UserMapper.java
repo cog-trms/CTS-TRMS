@@ -7,7 +7,6 @@ import com.cognizant.trms.model.user.Role;
 import com.cognizant.trms.model.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import sun.invoke.empty.Empty;
 
 import java.util.*;
 import java.util.stream.Collectors;
