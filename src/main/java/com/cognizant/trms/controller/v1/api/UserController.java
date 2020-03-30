@@ -8,9 +8,9 @@ import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.model.user.User;
 import com.cognizant.trms.repository.user.UserRepository;
 import com.cognizant.trms.service.UserService;
+import com.cognizant.trms.util.AuthUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.deploy.net.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -28,6 +28,7 @@ import java.util.*;
 /**
  * Aravindan Dandapani
  */
+
 @RestController
 @RequestMapping("/api/v1/user")
 @Api(value="trms-application", description="Operations pertaining to user management in the TRMS application")
@@ -102,21 +103,16 @@ public class UserController {
     @DeleteMapping("/profile/{id}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
     public Response deleteProfile(@PathVariable("id") String id){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-        boolean authorized = authorities.contains(new SimpleGrantedAuthority("ADMIN"));
-        System.out.println("Authorized :"+ authorized);
-        if(authorized) {
-            Optional<User> userProfile = userRepository.findById(id);
-            if (userProfile.isPresent()) {
-                userRepository.deleteById(id);
-                return Response.ok();
-            } else {
-                return Response.notFound();
-            }
-        }
-        return Response.accessDenied();
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+//        boolean authorized = authorities.contains(new SimpleGrantedAuthority("ADMIN"));
+        return Response
+                .ok()
+                .setPayload(userService.deleteUser(id));
     }
+
+
+
 
 
 //    @GetMapping("/logout")

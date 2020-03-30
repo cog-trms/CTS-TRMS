@@ -95,22 +95,22 @@ public class TalentRecruitManagementSystemApplication {
                         .setRoles(new HashSet<>(Arrays.asList(adminRole)));
                 userRepository.save(admin);
             }
-            UserRole adminUserRole = new UserRole()
-                    .setRoleId(adminRole.getId())
-                    .setUserid(admin.getId());
-            userRoleRepository.save(adminUserRole);
-
-            Optional<User> adminUser = userRepository.findById(admin.getId());
-            if (adminUser.isPresent()){
-
-                Set<Role> roles = new HashSet<>();
-                adminUser.get().setRoles(roles);
-                adminUser.get().getRoles().add(adminRole);
-                Set<UserRole> userroles = new HashSet<>();
-                adminUser.get().setUserroles(userroles);
-                adminUser.get().getUserroles().add(adminUserRole);
-                userRepository.save(adminUser.get());
-            }
+//            UserRole adminUserRole = new UserRole()
+//                    .setRoleId(adminRole.getId())
+//                    .setUserid(admin.getId());
+//            userRoleRepository.save(adminUserRole);
+//
+//            Optional<User> adminUser = userRepository.findById(admin.getId());
+//            if (adminUser.isPresent()){
+//
+//                Set<Role> roles = new HashSet<>();
+//                adminUser.get().setRoles(roles);
+//                adminUser.get().getRoles().add(adminRole);
+//                Set<UserRole> userroles = new HashSet<>();
+//                adminUser.get().setUserroles(userroles);
+//                adminUser.get().getUserroles().add(adminUserRole);
+//                userRepository.save(adminUser.get());
+//            }
 
 
 

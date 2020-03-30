@@ -8,4 +8,10 @@ import java.util.Set;
 public interface AccountService {
 
     Set<AccountDto> getAllAccounts() throws JsonProcessingException;
+
+    AccountDto findByaccountName(String accName) throws JsonProcessingException;
+
+    AccountDto getAccountById(String Id);
+
+    AccountDto getAccountByBusinessUnitId(String Id);
 }

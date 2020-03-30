@@ -2,6 +2,7 @@ package com.cognizant.trms.service;
 
 import com.cognizant.trms.dto.mapper.UserMapper;
 import com.cognizant.trms.dto.model.user.UserDto;
+import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
@@ -10,6 +11,7 @@ import com.cognizant.trms.model.user.User;
 import com.cognizant.trms.model.user.UserRoles;
 import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.UserRepository;
+import com.cognizant.trms.util.AuthUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
@@ -119,12 +121,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<UserDto> listUsers() throws JsonProcessingException {
-       log.debug("Service Layer - LIST ALL USERS "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userRepository.findAll()));
+      // log.debug("Service Layer - LIST ALL USERS "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userRepository.findAll()));
         return userRepository.findAll()
                 .stream()
                 .filter(Objects::nonNull)
                 .map(userM -> UserMapper.toUserDto(userM))
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @Override
+    public boolean deleteUser(String id) {
+        if(AuthUtil.isAdmin()) {
+            Optional<User> userProfile = userRepository.findById(id);
+            if (userProfile.isPresent()) {
+                userRepository.deleteById(id);
+                return true;
+            }  throw exceptionWithId(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, id);
+        }
+        throw exceptionWithId(EntityType.USER, ExceptionType.ACCESS_DENIED, " Only an admin user can perform this operation");
+
     }
 
     /**
@@ -137,5 +152,9 @@ public class UserServiceImpl implements UserService {
      */
     private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
         return TRMSException.throwException(entityType, exceptionType, args);
+    }
+
+    private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id, String... args) {
+        return TRMSException.throwExceptionWithId(entityType, exceptionType, id, args);
     }
 }

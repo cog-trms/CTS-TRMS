@@ -1,5 +1,6 @@
 package com.cognizant.trms.security.api;
 
+import com.cognizant.trms.dto.response.TokenResponse;
 import com.cognizant.trms.model.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -70,6 +71,15 @@ public class ApiJWTAuthenticationFilter extends UsernamePasswordAuthenticationFi
                         .signWith(SignatureAlgorithm.HS512, SECRET)
                         .compact();
                 res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+                PrintWriter out = res.getWriter();
+                res.setContentType("application/json");
+                res.setCharacterEncoding("UTF-8");
+                TokenResponse tokenResponse = new TokenResponse();
+                tokenResponse.setToken(TOKEN_PREFIX + token);
+                ObjectMapper mapper = new ObjectMapper();
+                String jsonInString = mapper.writeValueAsString(tokenResponse);
+                out.print(jsonInString);
+                out.flush();
             }
         }
     }

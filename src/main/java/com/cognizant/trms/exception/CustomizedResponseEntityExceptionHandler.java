@@ -29,4 +29,12 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         response.addErrorMsgToResponse(ex.getMessage(), ex);
         return new ResponseEntity(response, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(TRMSException.AccessDeniedException.class)
+    public final ResponseEntity handleNotFountExceptions2(Exception ex, WebRequest request) {
+        Response response = Response.accessDenied();
+        response.addErrorMsgToResponse(ex.getMessage(), ex);
+        return new ResponseEntity(response, HttpStatus.UNAUTHORIZED);
+    }
+
 }

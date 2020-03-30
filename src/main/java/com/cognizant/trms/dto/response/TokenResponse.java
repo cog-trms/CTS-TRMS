@@ -1,11 +1,10 @@
-package com.cognizant.trms.dto.model.user;
+package com.cognizant.trms.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /*
@@ -15,15 +14,8 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
-@ToString
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BusinessUnitDto implements Comparable {
-    private String id;
-    private String buName;
-
-    @Override
-    public int compareTo(Object o) {
-        return this.getBuName().compareTo(((BusinessUnitDto) o).getBuName());
-    }
+public class TokenResponse {
+    private String token;
 }
