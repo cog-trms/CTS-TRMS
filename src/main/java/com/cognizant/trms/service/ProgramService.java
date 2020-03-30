@@ -5,6 +5,7 @@ package com.cognizant.trms.service;
 import java.util.Set;
 
 import com.cognizant.trms.dto.model.user.ProgramDto;
+import com.cognizant.trms.dto.response.Response;
 
 /**
  * @author Vara Kotha
@@ -21,12 +22,14 @@ public interface ProgramService {
 	 
 	 
 	 /**
-	     * Register a new Program
+	     * Create or update program details
 	     *
 	     * @param programDto
 	     * @return
 	     */
-	 ProgramDto createProgram(ProgramDto programDto);
- 
+	 ProgramDto saveOrUpdateProgram(ProgramDto programDto);
+	 
+	 
+	 Response deleteProgram(String id);
 
 }

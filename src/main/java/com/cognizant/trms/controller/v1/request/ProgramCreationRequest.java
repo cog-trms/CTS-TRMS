@@ -26,12 +26,15 @@ import lombok.experimental.Accessors;
 public class ProgramCreationRequest {
 	
 	@NotEmpty(message = "{constraints.NotEmpty.message}")
-    private String programName;
+    private String name;
 	
 	// To retrieve Account object
-	private String accountName;
+	private String accountId;
 	
 	// To retrieve Program Manager user object
-	private String programMgrEmail;
+	private String userId;
+	
+	
+	private String programId;
 
 }

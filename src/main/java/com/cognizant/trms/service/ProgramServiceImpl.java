@@ -4,6 +4,7 @@
 package com.cognizant.trms.service;
 
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.cognizant.trms.dto.mapper.ProgramMapper;
 import com.cognizant.trms.dto.model.user.ProgramDto;
+import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
@@ -29,6 +31,8 @@ import com.cognizant.trms.repository.user.UserRepository;
 /**
  * @author Vara Kotha
  *
+ *TODO: Include created time, updated date, auditing
+ *Review: Program name editable or non-editable
  */
 
 @Component
@@ -49,44 +53,72 @@ public class ProgramServiceImpl implements ProgramService {
 	  private ModelMapper modelMapper;
 	
 
+	 /***
+	  * Return all program details
+	  * @return programDto
+	  */
 	@Override
     public Set<ProgramDto> listPrograms() {
     	log.debug("ProgramServiceImpl:listPrograms ");
     	
         return programRepository.findAll()
                 .stream()
-                .map(listPrograms -> modelMapper.map(listPrograms, ProgramDto.class))
+                .map(listPrograms -> ProgramMapper.toProgramDto(listPrograms,"All"))
                 .collect(Collectors.toCollection(TreeSet::new));
     }
     
+	
+	/***
+	 * Save or Update program details
+	 * @param programDto
+	 * @return programDto
+	 */
 	@Override
-	public ProgramDto createProgram(ProgramDto programDto) {
+	public ProgramDto saveOrUpdateProgram(ProgramDto programDto) {
+		Account selAccount = null;
+		User selProgramMgr = null;
+		Program programModel = null;
 		
-		//Get the account object using account name
-		Account account = accountRepository.findByaccountName(programDto.getAccountName());
+		//Get the account object
+		Optional<Account> account = accountRepository.findById(programDto.getAccountId());
 		
-		if (account== null) {
-			throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programDto.getAccountName());
+		if (account.isPresent()){
+			 selAccount = account.get();
+		}else {
+			 throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programDto.getAccountId());
 		}
 		
-		// Get the user object using  program manger email
-		User programMgr = userRepository.findByEmail(programDto.getProgramMgrEmail());
+		// Get the user object
+		Optional<User> programMgr = userRepository.findById(programDto.getUserId());
 		
-		if (programMgr== null) {
-			throw exception(EntityType.PROGRAM_MGR, ExceptionType.ENTITY_NOT_FOUND, programDto.getProgramMgrEmail());
+		
+		if (programMgr.isPresent()) {
+			selProgramMgr = programMgr.get();
+		}else {
+			 throw exception(EntityType.PROGRAM_MGR, ExceptionType.ENTITY_NOT_FOUND, programDto.getUserId());
 		}
 		
-		// Build the Program data model
-		 Program gpProgram = programRepository.findByprogramName(programDto.getProgramName());
-	            if (gpProgram == null){
-	                gpProgram = new Program()
-	                    .setProgramName(programDto.getProgramName())
-	                    .setAccount(account)
-	                    .setProgramMgr(programMgr);
-	                return ProgramMapper.toProgramDto(programRepository.save(gpProgram));
-	            }
-	       throw exception(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programDto.getProgramName());
-
+		// Build and save/update the program details
+		Optional<Program> program = programRepository.findById(programDto.getProgramId());
+		
+		
+		
+		if (program.isPresent()) {
+			programModel = program.get();
+		}else {
+			programModel = new Program();
+			Optional<Program> program1 = Optional.ofNullable(programRepository.findByprogramName(programDto.getProgramName()));
+			 if(program1.isPresent()) {
+				 throw exception(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programDto.getProgramName());
+			 }
+		}
+		
+		programModel.setProgramName(programDto.getProgramName())
+					 .setAccount(selAccount)
+					 .setProgramMgr(selProgramMgr);
+								
+		 return ProgramMapper.toProgramDto(programRepository.save(programModel));
+	
 	}
 
 	
@@ -101,5 +133,23 @@ public class ProgramServiceImpl implements ProgramService {
     private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
         return TRMSException.throwException(entityType, exceptionType, args);
     }
+
+
+    /**
+     * Delete program
+     * @param id
+     * @return
+     */
+	@Override
+	public Response deleteProgram(String id) {
+		 Optional<Program> program = programRepository.findById(id);
+         if (program.isPresent()) {
+        	 programRepository.deleteById(id);
+             return Response.ok();
+         } else {
+             return Response.notFound();
+         }
+	}
+
 
 }
