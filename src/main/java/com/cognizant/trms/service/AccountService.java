@@ -1,5 +1,6 @@
 package com.cognizant.trms.service;
 
+import com.cognizant.trms.controller.v1.request.AccountCreationRequest;
 import com.cognizant.trms.dto.model.user.AccountDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -14,4 +15,8 @@ public interface AccountService {
     AccountDto getAccountById(String Id);
 
     AccountDto getAccountByBusinessUnitId(String Id);
+
+    AccountDto createAccount(AccountCreationRequest accountCreationRequest);
+
+    AccountDto updateAccount(AccountCreationRequest accountCreationRequest);
 }
