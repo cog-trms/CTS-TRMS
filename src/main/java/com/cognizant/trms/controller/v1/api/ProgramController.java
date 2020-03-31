@@ -67,12 +67,7 @@ public class ProgramController {
 	public ProgramDto createProgram(@Valid @RequestBody ProgramCreationRequest programCreationRequest) {
 		log.debug("Inside createProgram API Method");
 
-		ProgramDto programDto = new ProgramDto();
-		programDto.setProgramName(programCreationRequest.getName());
-		programDto.setAccountId(programCreationRequest.getAccountId());
-		programDto.setUserId(programCreationRequest.getUserId());
-
-		return programService.createProgram(programDto);
+			return programService.createProgram(programCreationRequest);
 	}
 
 	/***
@@ -86,13 +81,7 @@ public class ProgramController {
 	public ProgramDto updateProgram(@Valid @RequestBody ProgramUpateRequest programUpdateRequest) {
 		log.debug("Inside updateProgram API Method");
 
-		ProgramDto programDto = new ProgramDto();
-		programDto.setProgramName(programUpdateRequest.getName());
-		programDto.setAccountId(programUpdateRequest.getAccountId());
-		programDto.setUserId(programUpdateRequest.getUserId());
-		programDto.setProgramId(programUpdateRequest.getProgramId());
-
-		return programService.updateProgram(programDto);
+				return programService.updateProgram(programUpdateRequest);
 	}
 
 	/***

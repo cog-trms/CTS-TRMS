@@ -13,6 +13,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.cognizant.trms.controller.v1.request.ProgramCreationRequest;
+import com.cognizant.trms.controller.v1.request.ProgramUpateRequest;
 import com.cognizant.trms.dto.mapper.ProgramMapper;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
@@ -62,38 +65,39 @@ public class ProgramServiceImpl implements ProgramService {
 	 * @return programDto
 	 */
 	@Override
-	public ProgramDto createProgram(ProgramDto programDto) {
+	public ProgramDto createProgram(ProgramCreationRequest programCreationReq) {
 		Account selAccount = null;
 		User selProgramMgr = null;
 
 		// Get the account object
-		Optional<Account> account = accountRepository.findById(programDto.getAccountId());
+		Optional<Account> account = accountRepository.findById(programCreationReq.getAccountId());
 
 		if (account.isPresent()) {
 			selAccount = account.get();
 		} else {
-			throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programDto.getAccountId());
+			throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programCreationReq.getAccountId());
 		}
-
+		
 		// Get the user object
-		Optional<User> programMgr = userRepository.findById(programDto.getUserId());
+		Optional<User> programMgr = userRepository.findById(programCreationReq.getUserId());
 
 		if (programMgr.isPresent()) {
 			selProgramMgr = programMgr.get();
 		} else {
-			throw exception(EntityType.PROGRAM_MGR, ExceptionType.ENTITY_NOT_FOUND, programDto.getUserId());
+			throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, programCreationReq.getUserId());
 		}
+			
 
 		// Verify whether same program already exist
-		Program program = programRepository.findByprogramName(programDto.getProgramName());
+		Program program = programRepository.findByprogramName(programCreationReq.getName());
 
 		// Save the program
 		if (program == null) {
-			Program programModel = new Program().setProgramName(programDto.getProgramName()).setAccount(selAccount)
+			Program programModel = new Program().setProgramName(programCreationReq.getName()).setAccount(selAccount)
 					.setProgramMgr(selProgramMgr);
 			return ProgramMapper.toProgramDto(programRepository.save(programModel));
 		}
-		throw exception(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programDto.getProgramName());
+		throw exception(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programCreationReq.getName());
 
 	}
 
@@ -105,39 +109,39 @@ public class ProgramServiceImpl implements ProgramService {
 	 */
 
 	@Override
-	public ProgramDto updateProgram(ProgramDto programDto) {
+	public ProgramDto updateProgram(ProgramUpateRequest programUpdateRequest) {
 		Account selAccount = null;
 		User selProgramMgr = null;
 
 		// Get the account object
-		Optional<Account> account = accountRepository.findById(programDto.getAccountId());
+		Optional<Account> account = accountRepository.findById(programUpdateRequest.getAccountId());
 
 		if (account.isPresent()) {
 			selAccount = account.get();
 		} else {
-			throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programDto.getAccountId());
+			throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programUpdateRequest.getAccountId());
 		}
 
 		// Get the user object
-		Optional<User> programMgr = userRepository.findById(programDto.getUserId());
+		Optional<User> programMgr = userRepository.findById(programUpdateRequest.getUserId());
 
 		if (programMgr.isPresent()) {
 			selProgramMgr = programMgr.get();
 		} else {
-			throw exception(EntityType.PROGRAM_MGR, ExceptionType.ENTITY_NOT_FOUND, programDto.getUserId());
+			throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, programUpdateRequest.getUserId());
 		}
 
 		// Patch/update the program
-		Optional<Program> program = programRepository.findById(programDto.getProgramId());
+		Optional<Program> program = programRepository.findById(programUpdateRequest.getProgramId());
 
 		if (program.isPresent()) {
 			Program programModel = program.get();
-			programModel.setProgramName(programDto.getProgramName()).setAccount(selAccount)
+			programModel.setProgramName(programUpdateRequest.getName()).setAccount(selAccount)
 					.setProgramMgr(selProgramMgr);
 
 			return ProgramMapper.toProgramDto(programRepository.save(programModel));
 		}
-		throw exception(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, programDto.getProgramName());
+		throw exception(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, programUpdateRequest.getName());
 
 	}
 

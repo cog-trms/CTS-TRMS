@@ -8,7 +8,7 @@ public enum EntityType {
     ROLE,
     ACCOUNT,
     BUSINESSUNIT,
-    PROGRAM_MGR,
+    TEAM,
     PROGRAM
 
 }
