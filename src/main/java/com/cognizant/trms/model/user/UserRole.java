@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class UserRole {
     @Id
     private String id;
-    private String userid;
+    private String userId;
     private String roleId;
 //    @DBRef(lazy = true)
 //    private Account account;

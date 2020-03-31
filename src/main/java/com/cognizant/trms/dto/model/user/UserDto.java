@@ -21,13 +21,14 @@ import java.util.Set;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto implements Comparable {
+    private String id;
     private String email;
     private String password;
     private String firstName;
     private String lastName;
     private String mobileNumber;
     private boolean isAdmin;
-    private Set<UserRoleDto> user_roles;
+    private Set<UserRoleDto> userRoles;
     private Set<RoleDto> roles;
 
     public String getFullName() {
