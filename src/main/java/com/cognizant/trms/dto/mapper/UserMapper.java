@@ -3,7 +3,6 @@ package com.cognizant.trms.dto.mapper;
 import com.cognizant.trms.dto.model.user.RoleDto;
 import com.cognizant.trms.dto.model.user.UserDto;
 import com.cognizant.trms.dto.model.user.UserRoleDto;
-import com.cognizant.trms.model.user.Role;
 import com.cognizant.trms.model.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -23,6 +22,7 @@ public class UserMapper {
 //       Set<Role> srs =  setRoles.get();
 // NULL CHECK NEEDED FOR ALL THE STREAM CODE BELOW
         return new UserDto()
+                .setId(user.getId())
                 .setEmail(user.getEmail())
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
@@ -36,7 +36,7 @@ public class UserMapper {
 
                     )
 
-                .setUser_roles(
+                .setUserRoles(
                         new HashSet<UserRoleDto>(Optional.ofNullable(user.getUserroles()).orElse(Collections.emptySet())
                             .stream()
                                 .filter(Objects::nonNull)

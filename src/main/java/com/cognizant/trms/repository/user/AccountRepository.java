@@ -12,4 +12,6 @@ public interface AccountRepository extends MongoRepository <Account, String>{
 
     Account findByBusinessUnit(BusinessUnit businessUnit);
 
+    Account findByAccountNameAndBusinessUnit(String accountName, BusinessUnit businessUnit);
+
 }
