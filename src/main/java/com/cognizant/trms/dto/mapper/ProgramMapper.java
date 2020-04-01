@@ -5,8 +5,6 @@ package com.cognizant.trms.dto.mapper;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.modelmapper.ModelMapper;
-
 import com.cognizant.trms.dto.model.user.AccountDto;
 import com.cognizant.trms.dto.model.user.ProgramDto;
 import com.cognizant.trms.dto.model.user.UserDto;
