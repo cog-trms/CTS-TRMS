@@ -172,15 +172,16 @@ public class TalentRecruitManagementSystemApplication {
                 account = new Account();
                 account.setAccountName("Pearson");
                 account.setBusinessUnit(businessUnit);
-                account.setUser(hiringManager);
+                account.setHiringManger(hiringManager);
+                //account.setUserId(hiringManager.getId());
                 accountRepository.save(account);
 
                 UserRole userRoles = userRoleRepository.findByuserId(hiringManager.getId());
                 if(userRoles == null){
                     userRoles = new UserRole()
                             .setUserId(hiringManager.getId())
-                            .setRoleId(hmRole.getId());
-                    //        .setAccount(account)
+                            .setRoleId(hmRole.getId())
+                          .setAccount(account);
 
                     userRoleRepository.save(userRoles);
                 }
@@ -190,9 +191,9 @@ public class TalentRecruitManagementSystemApplication {
                     Set<Role> roles = new HashSet<>();
                     hm.get().setRoles(roles);
                     hm.get().getRoles().add(hmRole);
-                    Set<UserRole> userroles = new HashSet<>();
-                    hm.get().setUserroles(userroles);
-                    hm.get().getUserroles().add(userRoles);
+//                    Set<UserRole> userroles = new HashSet<>();
+//                    hm.get().setUserroles(userroles);
+//                    hm.get().getUserroles().add(userRoles);
                     userRepository.save(hm.get());
                 }
      }
@@ -209,9 +210,9 @@ public class TalentRecruitManagementSystemApplication {
                 if(pmUserRoles == null){
                     pmUserRoles = new UserRole()
                             .setUserId(programManager.getId())
-                            .setRoleId(pmRole.getId());
-                          //  .setAccount(account)
-                          //  .setProgram(gpProgram)
+                            .setRoleId(pmRole.getId())
+                            .setAccount(account)
+                            .setProgram(gpProgram);
 
                     userRoleRepository.save(pmUserRoles);
                 }
@@ -222,9 +223,9 @@ public class TalentRecruitManagementSystemApplication {
                     Set<Role> roles = new HashSet<>();
                     pm.get().setRoles(roles);
                     pm.get().getRoles().add(pmRole);
-                    Set<UserRole> userroles = new HashSet<>();
-                    pm.get().setUserroles(userroles);
-                    pm.get().getUserroles().add(pmUserRoles);
+//                    Set<UserRole> userroles = new HashSet<>();
+//                    pm.get().setUserroles(userroles);
+//                    pm.get().getUserroles().add(pmUserRoles);
                     userRepository.save(pm.get());
                 }
             }
@@ -243,10 +244,10 @@ public class TalentRecruitManagementSystemApplication {
                 if(tmRoles == null){
                     tmRoles = new UserRole()
                             .setUserId(teamMember1.getId())
-                            .setRoleId(tmRole.getId());
-                           // .setAccount(account)
-                            //.setProgram(gpProgram)
-                            //.setTeam(plaTeam)
+                            .setRoleId(tmRole.getId())
+                            .setAccount(account)
+                            .setProgram(gpProgram)
+                            .setTeam(plaTeam);
 
                     userRoleRepository.save(tmRoles);
                 }
@@ -256,9 +257,9 @@ public class TalentRecruitManagementSystemApplication {
                     Set<Role> roles = new HashSet<>();
                     tm1.get().setRoles(roles);
                     tm1.get().getRoles().add(tmRole);
-                    Set<UserRole> userroles = new HashSet<>();
-                    tm1.get().setUserroles(userroles);
-                    tm1.get().getUserroles().add(tmRoles);
+//                    Set<UserRole> userroles = new HashSet<>();
+//                    tm1.get().setUserroles(userroles);
+//                    tm1.get().getUserroles().add(tmRoles);
                     userRepository.save(tm1.get());
                 }
             }
@@ -276,10 +277,10 @@ public class TalentRecruitManagementSystemApplication {
                 if(tmRoles2 == null){
                     tmRoles2 = new UserRole()
                             .setUserId(teamMember2.getId())
-                            .setRoleId(tmRole.getId());
-                           // .setAccount(account)
-                            //.setProgram(gpProgram)
-                            //.setTeam(plaTeam)
+                            .setRoleId(tmRole.getId())
+                            .setAccount(account)
+                            .setProgram(gpProgram)
+                            .setTeam(plaTeam);
 
                     userRoleRepository.save(tmRoles2);
                 }
@@ -289,9 +290,9 @@ public class TalentRecruitManagementSystemApplication {
                     Set<Role> roles = new HashSet<>();
                     tm2.get().setRoles(roles);
                     tm2.get().getRoles().add(tmRole);
-                    Set<UserRole> userroles = new HashSet<>();
-                    tm2.get().setUserroles(userroles);
-                    tm2.get().getUserroles().add(tmRoles2);
+//                    Set<UserRole> userroles = new HashSet<>();
+//                    tm2.get().setUserroles(userroles);
+//                    tm2.get().getUserroles().add(tmRoles2);
                     userRepository.save(tm2.get());
                 }
             }

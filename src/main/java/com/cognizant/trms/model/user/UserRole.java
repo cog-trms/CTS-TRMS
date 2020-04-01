@@ -21,10 +21,13 @@ public class UserRole {
     private String id;
     private String userId;
     private String roleId;
-//    @DBRef(lazy = true)
-//    private Account account;
-//    @DBRef(lazy = true)
-//    private Program program;
-//    @DBRef(lazy = true)
-//    private Team team;
+//    private String accountId;
+//    private String programId;
+//    private String teamId;
+    @DBRef(lazy = true)
+    private Account account;
+    @DBRef(lazy = true)
+    private Program program;
+    @DBRef(lazy = true)
+    private Team team;
 }

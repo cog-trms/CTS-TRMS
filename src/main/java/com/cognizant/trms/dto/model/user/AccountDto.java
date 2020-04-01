@@ -22,7 +22,8 @@ public class AccountDto implements Comparable {
 
     private String id;
     private String accountName;
-    private UserDto user;
+    private UserDto hiringManger;
+    //private String userId;
     private BusinessUnitDto businessUnit;
 
 

@@ -1,6 +1,5 @@
 package com.cognizant.trms.dto.model.user;
 
-import com.cognizant.trms.model.user.Program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -8,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+
+import java.util.Set;
 
 /*
     Author: Aravindan Dandapani
@@ -19,15 +20,12 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRoleDto {
+public class TeamDto {
 
     private String id;
-    private String userId;
-    private String roleId;
-//    private String accountId;
-//    private String programId;
-//    private String teamId;
-    private AccountDto account;
+    private String teamName;
     private ProgramDto program;
-    private TeamDto team;
+    private Set<UserDto> teamMembers;
+
 }
+
