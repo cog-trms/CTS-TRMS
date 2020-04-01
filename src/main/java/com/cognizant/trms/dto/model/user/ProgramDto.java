@@ -1,16 +1,16 @@
+
 package com.cognizant.trms.dto.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-/*
-    Author: Aravindan Dandapani
-*/
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -18,6 +18,7 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ProgramDto {
     private String id;
 
@@ -26,3 +27,12 @@ public class ProgramDto {
     //private String programMgrId;
     private UserDto programManager;
 }
+
+
+	@Override
+	public int compareTo(Object o) {
+		return this.getProgramName().compareTo(((ProgramDto) o).getProgramName());
+	}
+
+}
+
