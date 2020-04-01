@@ -19,15 +19,13 @@ import lombok.experimental.Accessors;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 
-public class ProgramDto {
+public class ProgramDto implements Comparable{
     private String id;
 
     private String programName;
     private AccountDto account;
     //private String programMgrId;
     private UserDto programManager;
-}
-
 
 	@Override
 	public int compareTo(Object o) {
