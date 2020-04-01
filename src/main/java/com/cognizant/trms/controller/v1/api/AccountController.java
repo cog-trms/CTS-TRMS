@@ -81,7 +81,7 @@ public class AccountController {
 
     @PutMapping("/account")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response updateAccount(@RequestBody @Valid AccountCreationRequest accountCreationRequest){
+    public Response updateAccount(@RequestBody @Valid AccountCreationRequest accountCreationRequest) throws JsonProcessingException {
         return Response
                 .ok()
                 .setPayload(accountService.updateAccount(accountCreationRequest));

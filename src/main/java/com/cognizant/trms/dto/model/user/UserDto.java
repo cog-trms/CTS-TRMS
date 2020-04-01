@@ -28,7 +28,7 @@ public class UserDto implements Comparable {
     private String lastName;
     private String mobileNumber;
     private boolean isAdmin;
-    private Set<UserRoleDto> userRoles;
+   // private Set<UserRoleDto> userRoles;
     private Set<RoleDto> roles;
 
     public String getFullName() {

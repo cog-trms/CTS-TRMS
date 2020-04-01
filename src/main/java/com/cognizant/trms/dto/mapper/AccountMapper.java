@@ -6,6 +6,7 @@ import com.cognizant.trms.dto.model.user.UserDto;
 import com.cognizant.trms.model.user.Account;
 import org.modelmapper.ModelMapper;
 
+
 /*
     Author: Aravindan Dandapani
 */
@@ -23,6 +24,9 @@ public class AccountMapper {
                 .setId(account.getId())
                 .setAccountName(account.getAccountName())
                 .setBusinessUnit(new ModelMapper().map(account.getBusinessUnit(),BusinessUnitDto.class))
-                .setUser(UserMapper.toUserDto(account.getUser()));
+               // .setUser(UserMapper.toUserDto(account.getUser()))
+                //.setUserId(account.getUserId())
+                .setHiringManger(new ModelMapper().map(account.getHiringManger(), UserDto.class));
+
     }
 }

@@ -32,4 +32,5 @@ public class Program {
     private Account account;
     @DBRef(lazy = true)
     private User programMgr;
+    //private String programMgrId;
 }

@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.cognizant.trms.dto.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,10 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-/**
- * @author Vara Kotha
- *
- */
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -23,17 +18,16 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProgramDto implements Comparable {
 
-	private String programId;
-	private String programName;
-	private String accountId;
-	private String userId;
-	private String accountName;
-	private String programMgrEmail;
-	private String programMgrFullName;
-	private AccountDto account;
-	private UserDto programMgr;
+public class ProgramDto {
+    private String id;
+
+    private String programName;
+    private AccountDto account;
+    //private String programMgrId;
+    private UserDto programManager;
+}
+
 
 	@Override
 	public int compareTo(Object o) {
@@ -41,3 +35,4 @@ public class ProgramDto implements Comparable {
 	}
 
 }
+

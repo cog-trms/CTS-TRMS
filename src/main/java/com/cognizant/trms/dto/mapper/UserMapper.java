@@ -34,14 +34,14 @@ public class UserMapper {
                                     .map(role -> new ModelMapper().map(role, RoleDto.class))
                                     .collect(Collectors.toSet()))
 
-                    )
+                    );
 
-                .setUserRoles(
-                        new HashSet<UserRoleDto>(Optional.ofNullable(user.getUserroles()).orElse(Collections.emptySet())
-                            .stream()
-                                .filter(Objects::nonNull)
-                            .map(userRole -> new ModelMapper().map(userRole, UserRoleDto.class))
-                            .collect(Collectors.toSet())));
+//                .setUserRoles(
+//                        new HashSet<UserRoleDto>(Optional.ofNullable(user.getUserroles()).orElse(Collections.emptySet())
+//                            .stream()
+//                                .filter(Objects::nonNull)
+//                            .map(userRole -> new ModelMapper().map(userRole, UserRoleDto.class))
+//                            .collect(Collectors.toSet())));
     }
 
 }

@@ -18,5 +18,5 @@ public interface AccountService {
 
     AccountDto createAccount(AccountCreationRequest accountCreationRequest);
 
-    AccountDto updateAccount(AccountCreationRequest accountCreationRequest);
+    AccountDto updateAccount(AccountCreationRequest accountCreationRequest) throws JsonProcessingException;
 }
