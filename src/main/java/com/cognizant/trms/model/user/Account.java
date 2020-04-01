@@ -31,7 +31,8 @@ public class Account {
 
     private String accountName;
     @DBRef
-    private User user;
+    private User hiringManger;
+   // private String userId;
     @DBRef(lazy = true)
     private BusinessUnit businessUnit;
 
