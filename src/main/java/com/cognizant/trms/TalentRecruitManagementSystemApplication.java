@@ -179,8 +179,10 @@ public class TalentRecruitManagementSystemApplication {
                 UserRole userRoles = userRoleRepository.findByuserId(hiringManager.getId());
                 if(userRoles == null){
                     userRoles = new UserRole()
-                            .setUserId(hiringManager.getId())
-                            .setRoleId(hmRole.getId())
+                            //.setUserId(hiringManager.getId())
+                            //.setRoleId(hmRole.getId())
+                            .setUser(hiringManager)
+                            .setRole(hmRole)
                           .setAccount(account);
 
                     userRoleRepository.save(userRoles);
@@ -209,8 +211,10 @@ public class TalentRecruitManagementSystemApplication {
                 UserRole pmUserRoles = userRoleRepository.findByuserId(programManager.getId());
                 if(pmUserRoles == null){
                     pmUserRoles = new UserRole()
-                            .setUserId(programManager.getId())
-                            .setRoleId(pmRole.getId())
+                            //.setUserId(programManager.getId())
+                            //.setRoleId(pmRole.getId())
+                            .setUser(programManager)
+                            .setRole(pmRole)
                             .setAccount(account)
                             .setProgram(gpProgram);
 
@@ -243,8 +247,10 @@ public class TalentRecruitManagementSystemApplication {
                 UserRole tmRoles = userRoleRepository.findByuserId(teamMember1.getId());
                 if(tmRoles == null){
                     tmRoles = new UserRole()
-                            .setUserId(teamMember1.getId())
-                            .setRoleId(tmRole.getId())
+                            //.setUserId(teamMember1.getId())
+                            //.setRoleId(tmRole.getId())
+                            .setUser(teamMember1)
+                            .setRole(tmRole)
                             .setAccount(account)
                             .setProgram(gpProgram)
                             .setTeam(plaTeam);
@@ -276,8 +282,10 @@ public class TalentRecruitManagementSystemApplication {
                 UserRole tmRoles2 = userRoleRepository.findByuserId(teamMember2.getId());
                 if(tmRoles2 == null){
                     tmRoles2 = new UserRole()
-                            .setUserId(teamMember2.getId())
-                            .setRoleId(tmRole.getId())
+                            //.setUserId(teamMember2.getId())
+                           // .setRoleId(tmRole.getId())
+                            .setUser(teamMember2)
+                            .setRole(tmRole)
                             .setAccount(account)
                             .setProgram(gpProgram)
                             .setTeam(plaTeam);

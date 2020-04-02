@@ -124,9 +124,11 @@ public class AccountServiceImpl implements AccountService {
     private void createUserRoles(User user, Account account) {
         Role role = roleRepository.findByRole(UserRoles.HIRING_MANAGER.name());
         UserRole userRole = new UserRole()
-                .setRoleId(role.getId())
-                .setUserId(user.getId())
-                .setAccount(account);
+                //.setRoleId(role.getId())
+                //.setUserId(user.getId())
+                .setUser(user)
+                .setAccount(account)
+                .setRole(role);
         userRoleRepository.save(userRole);
 
         user.setRoles(new HashSet<>(Arrays.asList(role)));
@@ -140,16 +142,21 @@ public class AccountServiceImpl implements AccountService {
 
         if (existingUserRole == null) {
             UserRole userRole = new UserRole()
-                    .setRoleId(role.getId())
-                    .setUserId(user.getId())
-                    .setAccount(account);
+                    //.setRoleId(role.getId())
+                    //.setUserId(user.getId())
+                    .setUser(user)
+                    .setAccount(account)
+                    .setRole(role);
             userRoleRepository.save(userRole);
 
             user.setRoles(new HashSet<>(Arrays.asList(role)));
             userRepository.save(user);
         } else {
-            existingUserRole.setUserId(user.getId());
+            //existingUserRole.setUserId(user.getId());
+            existingUserRole.setUser(user);
             userRoleRepository.save(existingUserRole);
+            user.setRoles(new HashSet<>(Arrays.asList(role)));
+            userRepository.save(user);
         }
     }
 

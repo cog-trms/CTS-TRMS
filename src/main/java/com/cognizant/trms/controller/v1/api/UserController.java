@@ -30,7 +30,7 @@ import java.util.*;
  */
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 @Api(value="trms-application", description="Operations pertaining to user management in the TRMS application")
 public class UserController {
     private static final Logger log = LogManager.getLogger(UserController.class);
@@ -67,6 +67,29 @@ public class UserController {
                 .setPayload(userService.listUsers());
     }
 
+    @GetMapping("/account/{accountId}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getUsersByAccount(@PathVariable ("accountId") String accountId) throws JsonProcessingException {
+        return Response
+                .ok()
+                .setPayload(userService.getUserByAccount(accountId));
+    }
+    @GetMapping("/program/{programId}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getUsersByProgram(@PathVariable ("programId") String programId) throws JsonProcessingException {
+        return Response
+                .ok()
+                .setPayload(userService.getUserByProgram(programId));
+    }
+
+    @GetMapping("/team/{teamId}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getUsersByTeam(@PathVariable ("teamId") String teamId) throws JsonProcessingException {
+        return Response
+                .ok()
+                .setPayload(userService.getUserByTeam(teamId));
+    }
+
     @GetMapping("/getTokenDetails")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
     public Response getTokenDetails(){
@@ -90,15 +113,17 @@ public class UserController {
 
     @PatchMapping("/profile")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response patchProfile(UserProfileRequest userProfileRequest){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDto userProfile = userService.findUserByEmail(auth.getName());
-        userProfile.setFirstName(userProfileRequest.getFirstName())
-                .setLastName(userProfileRequest.getLastName())
-                .setMobileNumber(userProfileRequest.getMobileNumber());
-       return Response.ok().setPayload(userService.updateProfile(userProfile));
+    public Response patchProfile(@RequestBody UserProfileRequest userProfileRequest) throws JsonProcessingException {
+        log.debug("Controller Layer - Update profile "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(userProfileRequest));
+
+       return Response
+               .ok()
+               .setPayload(updateUserProfile(userProfileRequest));
     }
 
+    private UserDto updateUserProfile(UserProfileRequest userProfileRequest) throws JsonProcessingException {
+        return userService.updateProfile(userProfileRequest);
+    }
 
     @DeleteMapping("/profile/{id}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
