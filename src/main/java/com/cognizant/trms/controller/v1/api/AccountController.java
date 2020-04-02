@@ -56,11 +56,11 @@ public class AccountController {
 
     @GetMapping("/account/buid/{buId}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response getAccountsByBuId(@PathVariable("buId") String buId){
+    public Response getAccountsByBuId(@PathVariable("buId") String buId) throws JsonProcessingException {
 
         return Response
                 .ok()
-                .setPayload(accountService.getAccountByBusinessUnitId(buId));
+                .setPayload(accountService.getAccountsByBusinessUnitId(buId));
     }
 
     @GetMapping("/account/buname/{name}")
@@ -68,7 +68,7 @@ public class AccountController {
     public Response getAccountsByBuName(@PathVariable("name") String buName){
         return Response
                 .ok()
-                .setPayload(accountService.getAccountByBusinessUnitId(buName));
+                .setPayload(accountService.getAccountsByBusinessUnitName(buName));
     }
 
     @PostMapping("/account")

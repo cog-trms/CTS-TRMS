@@ -51,7 +51,7 @@ public class BusinessUnitServiceImpl implements BusinessUnitService {
     @Override
     public BusinessUnitDto getBusinessUnitByName(String buName) {
 
-       Optional<BusinessUnit> businessUnit =  Optional.ofNullable(businessUnitRepository.findBybuName(buName));
+       Optional<BusinessUnit> businessUnit =  Optional.ofNullable(businessUnitRepository.findBybuName(buName.toLowerCase()));
        if(businessUnit.isPresent()){
            return modelMapper.map(businessUnit.get(),BusinessUnitDto.class);
        }
@@ -64,7 +64,7 @@ public class BusinessUnitServiceImpl implements BusinessUnitService {
        BusinessUnit businessUnit = businessUnitRepository.findBybuName(buName);
        if (businessUnit == null) {
            BusinessUnit businessUnit1 = new BusinessUnit()
-                   .setBuName(buName);
+                   .setBuName(buName.toLowerCase());
            return modelMapper.map(businessUnitRepository.save(businessUnit1), BusinessUnitDto.class);
        }
         throw exceptionWithId(EntityType.BUSINESSUNIT, ExceptionType.DUPLICATE_ENTITY, buName);
@@ -75,7 +75,7 @@ public class BusinessUnitServiceImpl implements BusinessUnitService {
         String id = businessUnitDto.getId();
         Optional<BusinessUnit> businessUnit = businessUnitRepository.findById(id);
         if (businessUnit.isPresent()) {
-            businessUnit.get().setBuName(businessUnitDto.getBuName());
+            businessUnit.get().setBuName(businessUnitDto.getBuName().toLowerCase());
             return modelMapper.map(businessUnitRepository.save(businessUnit.get()), BusinessUnitDto.class);
         }
         throw exceptionWithId(EntityType.BUSINESSUNIT, ExceptionType.ENTITY_NOT_FOUND, id);

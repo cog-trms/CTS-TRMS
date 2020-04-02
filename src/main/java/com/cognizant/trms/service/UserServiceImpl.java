@@ -74,11 +74,11 @@ public class UserServiceImpl implements UserService {
                 userRole = roleRepository.findByRole(UserRoles.UN_ASSIGNED.name());
             }
             user = new User()
-                    .setEmail(userDto.getEmail())
+                    .setEmail(userDto.getEmail().toLowerCase())
                     .setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()))
                     .setRoles(new HashSet<>(Arrays.asList(userRole)))
-                    .setFirstName(userDto.getFirstName())
-                    .setLastName(userDto.getLastName())
+                    .setFirstName(userDto.getFirstName().toLowerCase())
+                    .setLastName(userDto.getLastName().toLowerCase())
                     .setMobileNumber(userDto.getMobileNumber());
             return UserMapper.toUserDto(userRepository.save(user));
         }
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     public UserDto findUserByEmail(String email) {
-        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email));
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmail(email.toLowerCase()));
         if (user.isPresent()) {
             return modelMapper.map(user.get(), UserDto.class);
         }
@@ -125,8 +125,8 @@ public class UserServiceImpl implements UserService {
 
             Optional<User> user = Optional.ofNullable(userRepository.findByEmail(auth.getName()));
             if (user.isPresent()) {
-                user.get().setFirstName((userProfileRequest.getFirstName() != null) ? userProfileRequest.getFirstName() : user.get().getFirstName())
-                        .setLastName((userProfileRequest.getLastName() != null) ? userProfileRequest.getLastName() : user.get().getLastName())
+                user.get().setFirstName((userProfileRequest.getFirstName() != null) ? userProfileRequest.getFirstName().toLowerCase() : user.get().getFirstName())
+                        .setLastName((userProfileRequest.getLastName() != null) ? userProfileRequest.getLastName().toLowerCase() : user.get().getLastName())
                         .setMobileNumber((userProfileRequest.getMobileNumber() != null) ? userProfileRequest.getMobileNumber() : user.get().getMobileNumber());
                 return UserMapper.toUserDto(userRepository.save(user.get()));
             }

@@ -54,7 +54,7 @@ public class MultiHttpSecurityConfig {
                         .disable()
                     .antMatcher("/api/**")
                     .authorizeRequests()
-                        .antMatchers("/api/v1/user/signup").permitAll()
+                        .antMatchers("/api/v1/users/signup").permitAll()
                       //  .antMatchers("/api/v1/user/listUsers").permitAll()
                     //.antMatchers("/api/v1/account/all").permitAll()
                     .anyRequest()
