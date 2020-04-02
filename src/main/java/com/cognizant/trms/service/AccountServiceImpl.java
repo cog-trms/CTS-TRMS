@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.ls.LSInput;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
 //        String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(accountRepository.findByaccountName(accName));
 //        log.debug("GET ACCOUNT BY NAME " + reqString);
 
-        Optional<Account> account = Optional.ofNullable(accountRepository.findByaccountName(accName));
+        Optional<Account> account = Optional.ofNullable(accountRepository.findByaccountName(accName.toLowerCase()));
         if(account.isPresent()) {
             //return modelMapper.map(account.get(), AccountDto.class);
             return AccountMapper.toAccountDto(account.get());
@@ -77,18 +78,45 @@ public class AccountServiceImpl implements AccountService {
         throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, Id);
     }
 
+
+
     @Override
-    public AccountDto getAccountByBusinessUnitId(String Id) {
+    public List<AccountDto> getAccountsByBusinessUnitId(String Id) throws JsonProcessingException {
         Optional<BusinessUnit> businessUnit = businessUnitRepository.findById(Id);
-        if(businessUnit.isPresent()) {
+        if (businessUnit.isPresent()) {
             BusinessUnit bu = businessUnit.get();
-         Optional<Account> account =  Optional.ofNullable(accountRepository.findByBusinessUnit(bu));
-         if(account.isPresent()){
-             return AccountMapper.toAccountDto(account.get());
-         }
-            throw  exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, bu.getBuName());
+            List<Account> accounts = accountRepository.findByBusinessUnit(bu);
+            String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(accounts);
+        log.debug("GET ACCOUNT BY NAME " + reqString);
+
+            if (!accounts.isEmpty()) {
+                return accounts
+                        .stream()
+                        .filter(account -> account != null)
+                        .map(account -> AccountMapper.toAccountDto(account))
+                        .collect(Collectors.toList());
+            }
+            throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, bu.getBuName());
         }
-            throw exceptionWithId(EntityType.BUSINESSUNIT, ExceptionType.ENTITY_NOT_FOUND, Id );
+        throw exceptionWithId(EntityType.BUSINESSUNIT, ExceptionType.ENTITY_NOT_FOUND, Id);
+    }
+
+    @Override
+    public List<AccountDto> getAccountsByBusinessUnitName(String Name) {
+        BusinessUnit businessUnit = businessUnitRepository.findBybuName(Name.toLowerCase());
+        if (businessUnit != null) {
+
+            List<Account> accounts = accountRepository.findByBusinessUnit(businessUnit);
+            if (!accounts.isEmpty()) {
+                return accounts
+                        .stream()
+                        .filter(account -> account != null)
+                        .map(account -> AccountMapper.toAccountDto(account))
+                        .collect(Collectors.toList());
+            }
+            throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, businessUnit.getBuName());
+        }
+        throw exceptionWithId(EntityType.BUSINESSUNIT, ExceptionType.ENTITY_NOT_FOUND, Name);
     }
 
     @Override
@@ -105,7 +133,7 @@ public class AccountServiceImpl implements AccountService {
                 if (user.isPresent()) {
 
                     Account account1 = new Account()
-                            .setAccountName(accountName)
+                            .setAccountName(accountName.toLowerCase())
                             .setBusinessUnit(bu)
                             .setHiringManger(user.get());
                     //.setUserId(user.get().getId());
@@ -164,7 +192,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountDto updateAccount(AccountCreationRequest accountCreationRequest) throws JsonProcessingException {
         String buId = accountCreationRequest.getBusinessUnitId();
-        String accountName = accountCreationRequest.getAccountName();
+        String accountName = accountCreationRequest.getAccountName().toLowerCase();
         String accountId = accountCreationRequest.getId();
         Optional<Account> existingAccount = accountRepository.findById(accountId);
         if (existingAccount.isPresent()) {
@@ -200,7 +228,7 @@ public class AccountServiceImpl implements AccountService {
                         }
                     }
                     existingAccount.get()
-                            .setAccountName(accountName)
+                            .setAccountName(accountName.toLowerCase())
                             .setHiringManger(user.get())
                             //.setUserId(user.get().getId())
                             .setBusinessUnit(bu);
