@@ -1,6 +1,5 @@
 package com.cognizant.trms.dto.model.user;
 
-import com.cognizant.trms.model.user.Program;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -19,17 +18,18 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRoleDto {
+public class UserRoleDtoMinimal {
+    private String userId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String roleId;
+    private String roleName;
+    private String account;
+    private String program;
+    private String team;
+    private String accountId;
+    private String programId;
+    private String teamId;
 
-    private String id;
-   // private String userId;
-   // private String roleId;
-//    private String accountId;
-//    private String programId;
-//    private String teamId;
-    private UserDto user;
-    private RoleDto role;
-    private AccountDto account;
-    private ProgramDto program;
-    private TeamDto team;
 }

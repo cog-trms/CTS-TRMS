@@ -19,11 +19,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class UserRole {
     @Id
     private String id;
-    private String userId;
-    private String roleId;
+   // private String userId;
+ //   private String roleId;
 //    private String accountId;
 //    private String programId;
 //    private String teamId;
+    @DBRef(lazy = true)
+    private User user;
+    @DBRef(lazy = true)
+    private Role role;
     @DBRef(lazy = true)
     private Account account;
     @DBRef(lazy = true)
