@@ -5,10 +5,12 @@ package com.cognizant.trms.service;
 
 import java.util.Set;
 
+import com.cognizant.trms.dto.model.user.AccountDto;
 import com.cognizant.trms.dto.model.user.ProgramDto;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.user.Account;
+import com.cognizant.trms.model.user.BusinessUnit;
 import com.cognizant.trms.model.user.Program;
 import com.cognizant.trms.model.user.Role;
 import com.cognizant.trms.model.user.User;
@@ -37,6 +40,7 @@ import com.cognizant.trms.repository.user.UserRepository;
 import com.cognizant.trms.repository.user.UserRoleRepository;
 import com.cognizant.trms.util.AuthUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Vara Kotha
@@ -53,6 +57,9 @@ public class ProgramServiceImpl implements ProgramService {
 
 	@Autowired
 	private AccountRepository accountRepository;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -232,6 +239,39 @@ public class ProgramServiceImpl implements ProgramService {
 			userRepository.save(user);
 		}
 
+	}
+
+	/**
+	 * Get list of Programs by AccountID
+	 */
+	@Override
+	public List<ProgramDto> getProgramsByAccountId(String accountId) throws JsonProcessingException {
+		Optional<Account> acc = accountRepository.findById(accountId);
+		if (acc.isPresent()) {
+			Account account = acc.get();
+			List<Program> programs = programRepository.findByAccount(account);
+			String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(programs);
+			log.debug("GET PROGRAM BY NAME " + reqString);
+			if (!programs.isEmpty()) {
+				return programs.stream().filter(program -> program != null)
+						.map(program -> ProgramMapper.toProgramDto(program)).collect(Collectors.toList());
+			}
+			throw exceptionWithId(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, account.getAccountName());
+		}
+		throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, accountId);
+
+	}
+
+	/**
+	 * Get program by programID
+	 */
+	@Override
+	public ProgramDto getProgramById(String Id) {
+		Optional<Program> program = programRepository.findById(Id);
+		if (program.isPresent()) {
+			return ProgramMapper.toProgramDto(program.get());
+		}
+		throw exceptionWithId(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, Id);
 	}
 
 }

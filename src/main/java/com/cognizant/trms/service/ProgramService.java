@@ -3,6 +3,7 @@
  */
 package com.cognizant.trms.service;
 
+import java.util.List;
 import java.util.Set;
 
 import com.cognizant.trms.controller.v1.request.ProgramCreationRequest;
@@ -46,4 +47,8 @@ public interface ProgramService {
 	 * @return
 	 */
 	Boolean deleteProgram(String id);
+
+	List<ProgramDto> getProgramsByAccountId(String Id) throws JsonProcessingException;
+
+	ProgramDto getProgramById(String Id);
 }

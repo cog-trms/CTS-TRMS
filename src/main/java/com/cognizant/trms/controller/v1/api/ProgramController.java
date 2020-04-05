@@ -99,4 +99,17 @@ public class ProgramController {
 		return Response.ok().setPayload(programService.deleteProgram(id));
 	}
 
+	@GetMapping("/program/id/{id}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	public Response getProgramById(@PathVariable("id") String id) throws JsonProcessingException {
+		return Response.ok().setPayload(programService.getProgramById(id));
+	}
+
+	@GetMapping("/program/accountId/{accountId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	public Response getAccountsByBuId(@PathVariable("accountId") String accountId) throws JsonProcessingException {
+
+		return Response.ok().setPayload(programService.getProgramsByAccountId(accountId));
+	}
+
 }
