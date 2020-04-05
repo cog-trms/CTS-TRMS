@@ -10,7 +10,7 @@ import java.util.List;
     Author: Aravindan Dandapani
 */
 public interface AccountRepository extends MongoRepository <Account, String>{
-    Account findByaccountName(String accName);
+    Account findByaccountNameIgnoreCase(String accName);
 
     //Account findByBusinessUnit(BusinessUnit businessUnit);
     List<Account> findByBusinessUnit(BusinessUnit businessUnit);
