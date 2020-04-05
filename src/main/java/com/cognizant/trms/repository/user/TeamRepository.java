@@ -1,9 +1,14 @@
 package com.cognizant.trms.repository.user;
 
+import com.cognizant.trms.model.user.Program;
 import com.cognizant.trms.model.user.Team;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface TeamRepository extends MongoRepository <Team, String>{
+public interface TeamRepository extends MongoRepository<Team, String> {
 
-    Team findByteamName(String teamName);
+	Team findByteamName(String teamName);
+
+	Team findByteamNameAndProgram(String teamName, Program program);
+
 }

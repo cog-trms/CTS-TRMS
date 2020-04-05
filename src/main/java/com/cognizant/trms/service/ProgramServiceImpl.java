@@ -5,7 +5,6 @@ package com.cognizant.trms.service;
 
 import java.util.Set;
 
-import com.cognizant.trms.dto.model.user.AccountDto;
 import com.cognizant.trms.dto.model.user.ProgramDto;
 
 import java.util.Arrays;
@@ -21,13 +20,11 @@ import org.springframework.stereotype.Component;
 
 import com.cognizant.trms.controller.v1.request.ProgramCreationRequest;
 import com.cognizant.trms.controller.v1.request.ProgramUpateRequest;
-import com.cognizant.trms.dto.mapper.AccountMapper;
 import com.cognizant.trms.dto.mapper.ProgramMapper;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.user.Account;
-import com.cognizant.trms.model.user.BusinessUnit;
 import com.cognizant.trms.model.user.Program;
 import com.cognizant.trms.model.user.Role;
 import com.cognizant.trms.model.user.User;
@@ -91,7 +88,7 @@ public class ProgramServiceImpl implements ProgramService {
 	public ProgramDto createProgram(ProgramCreationRequest programCreationReq) {
 
 		String accountId = programCreationReq.getAccountId();
-		String programName = programCreationReq.getName();
+		String programName = programCreationReq.getName().toLowerCase();
 		String userId = programCreationReq.getUserId();
 
 		Optional<Account> acc = accountRepository.findById(accountId);
@@ -104,7 +101,7 @@ public class ProgramServiceImpl implements ProgramService {
 				Optional<User> user = userRepository.findById(userId);
 				if (user.isPresent()) {
 					User programMgr = user.get();
-					Program programModel = new Program().setProgramName(programName.toLowerCase()).setAccount(account)
+					Program programModel = new Program().setProgramName(programName).setAccount(account)
 							.setProgramMgr(programMgr);
 					programModel = programRepository.save(programModel);
 					createUserRoles(programMgr, account, programModel);
@@ -129,7 +126,7 @@ public class ProgramServiceImpl implements ProgramService {
 	@Override
 	public ProgramDto updateProgram(ProgramUpateRequest programUpdateReq) throws JsonProcessingException {
 		String accountId = programUpdateReq.getAccountId();
-		String programName = programUpdateReq.getName();
+		String programName = programUpdateReq.getName().toLowerCase();
 		String userId = programUpdateReq.getUserId();
 		String programId = programUpdateReq.getProgramId();
 
