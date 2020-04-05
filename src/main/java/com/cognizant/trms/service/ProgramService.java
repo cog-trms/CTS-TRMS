@@ -8,6 +8,7 @@ import java.util.Set;
 import com.cognizant.trms.controller.v1.request.ProgramCreationRequest;
 import com.cognizant.trms.controller.v1.request.ProgramUpateRequest;
 import com.cognizant.trms.dto.model.user.ProgramDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * @author Vara Kotha
@@ -35,8 +36,9 @@ public interface ProgramService {
 	 *
 	 * @param programDto
 	 * @return
+	 * @throws JsonProcessingException
 	 */
-	ProgramDto updateProgram(ProgramUpateRequest programUpateRequest);
+	ProgramDto updateProgram(ProgramUpateRequest programUpateRequest) throws JsonProcessingException;
 
 	/**
 	 * 

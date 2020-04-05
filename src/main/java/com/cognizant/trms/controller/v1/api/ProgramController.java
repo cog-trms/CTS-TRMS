@@ -22,6 +22,7 @@ import com.cognizant.trms.controller.v1.request.ProgramUpateRequest;
 import com.cognizant.trms.dto.model.user.ProgramDto;
 import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.service.ProgramService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,7 +58,7 @@ public class ProgramController {
 	}
 
 	/***
-	 *  
+	 * 
 	 * @param programCreationRequest
 	 * @return
 	 */
@@ -67,21 +68,23 @@ public class ProgramController {
 	public ProgramDto createProgram(@Valid @RequestBody ProgramCreationRequest programCreationRequest) {
 		log.debug("Inside createProgram API Method");
 
-			return programService.createProgram(programCreationRequest);
+		return programService.createProgram(programCreationRequest);
 	}
 
 	/***
-	 *  
+	 * 
 	 * @param ProgramUpateRequest
 	 * @return
+	 * @throws JsonProcessingException
 	 */
 	@PatchMapping("/program")
 	@ApiOperation(value = "API handler for updating program details", authorizations = {
 			@Authorization(value = "apiKey") })
-	public ProgramDto updateProgram(@Valid @RequestBody ProgramUpateRequest programUpdateRequest) {
+	public ProgramDto updateProgram(@Valid @RequestBody ProgramUpateRequest programUpdateRequest)
+			throws JsonProcessingException {
 		log.debug("Inside updateProgram API Method");
 
-				return programService.updateProgram(programUpdateRequest);
+		return programService.updateProgram(programUpdateRequest);
 	}
 
 	/***

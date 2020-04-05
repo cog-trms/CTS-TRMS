@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 /*
     Author: Aravindan Dandapani
 */
-public interface ProgramRepository extends MongoRepository <Program, String>{
-    Program findByprogramName(String pgmName);
+public interface ProgramRepository extends MongoRepository<Program, String> {
+	Program findByprogramName(String pgmName);
+
+	Program findByProgramNameAndAccountId(String pgmName, Account account);
 }

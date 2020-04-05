@@ -21,21 +21,14 @@ public class ProgramMapper {
 	private static final Logger log = LogManager.getLogger(ProgramMapper.class);
 
 	public static ProgramDto toProgramDto(Program program) {
-		
+
 		Account account = program.getAccount();
 		User programMgr = program.getProgramMgr();
 
-		return new ProgramDto().setProgramName(program.getProgramName())
-				.setId(program.getId())
-				.setAccount(new AccountDto()
-                .setId(account.getId())
-                .setAccountName(account.getAccountName()))
-				.setProgramManager(new UserDto()
-				.setId(programMgr.getId())
-				.setFirstName(programMgr.getFirstName())
-				.setLastName(programMgr.getLastName()));
+		return new ProgramDto().setProgramName(program.getProgramName()).setId(program.getId())
+				.setAccount(new AccountDto().setId(account.getId()).setAccountName(account.getAccountName()))
+				.setProgramManager(new UserDto().setId(programMgr.getId()).setFirstName(programMgr.getFirstName())
+						.setLastName(programMgr.getLastName()));
 	}
-
-
 
 }

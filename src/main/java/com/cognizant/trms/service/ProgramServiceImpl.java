@@ -6,6 +6,9 @@ package com.cognizant.trms.service;
 import java.util.Set;
 
 import com.cognizant.trms.dto.model.user.ProgramDto;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -16,17 +19,24 @@ import org.springframework.stereotype.Component;
 
 import com.cognizant.trms.controller.v1.request.ProgramCreationRequest;
 import com.cognizant.trms.controller.v1.request.ProgramUpateRequest;
+import com.cognizant.trms.dto.mapper.AccountMapper;
 import com.cognizant.trms.dto.mapper.ProgramMapper;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.user.Account;
 import com.cognizant.trms.model.user.Program;
+import com.cognizant.trms.model.user.Role;
 import com.cognizant.trms.model.user.User;
+import com.cognizant.trms.model.user.UserRole;
+import com.cognizant.trms.model.user.UserRoles;
 import com.cognizant.trms.repository.user.AccountRepository;
 import com.cognizant.trms.repository.user.ProgramRepository;
+import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.UserRepository;
+import com.cognizant.trms.repository.user.UserRoleRepository;
 import com.cognizant.trms.util.AuthUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * @author Vara Kotha
@@ -47,6 +57,12 @@ public class ProgramServiceImpl implements ProgramService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private RoleRepository roleRepository;
+
+	@Autowired
+	private UserRoleRepository userRoleRepository;
+
 	/***
 	 * Return all program details
 	 * 
@@ -66,38 +82,32 @@ public class ProgramServiceImpl implements ProgramService {
 	 */
 	@Override
 	public ProgramDto createProgram(ProgramCreationRequest programCreationReq) {
-		Account selAccount = null;
-		User selProgramMgr = null;
 
-		// Get the account object
-		Optional<Account> account = accountRepository.findById(programCreationReq.getAccountId());
+		String accountId = programCreationReq.getAccountId();
+		String programName = programCreationReq.getName();
+		String userId = programCreationReq.getUserId();
 
-		if (account.isPresent()) {
-			selAccount = account.get();
-		} else {
-			throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programCreationReq.getAccountId());
+		Optional<Account> acc = accountRepository.findById(accountId);
+
+		if (acc.isPresent()) {
+			Account account = acc.get();
+			Optional<Program> program = Optional
+					.ofNullable(programRepository.findByProgramNameAndAccountId(programName, account));
+			if (!program.isPresent()) {
+				Optional<User> user = userRepository.findById(userId);
+				if (user.isPresent()) {
+					User programMgr = user.get();
+					Program programModel = new Program().setProgramName(programName.toLowerCase()).setAccount(account)
+							.setProgramMgr(programMgr);
+					programModel = programRepository.save(programModel);
+					createUserRoles(programMgr, account, programModel);
+					return ProgramMapper.toProgramDto(programModel);
+				}
+				throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND);
+			}
+			throw exceptionWithId(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programName);
 		}
-		
-		// Get the user object
-		Optional<User> programMgr = userRepository.findById(programCreationReq.getUserId());
-
-		if (programMgr.isPresent()) {
-			selProgramMgr = programMgr.get();
-		} else {
-			throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, programCreationReq.getUserId());
-		}
-			
-
-		// Verify whether same program already exist
-		Program program = programRepository.findByprogramName(programCreationReq.getName());
-
-		// Save the program
-		if (program == null) {
-			Program programModel = new Program().setProgramName(programCreationReq.getName()).setAccount(selAccount)
-					.setProgramMgr(selProgramMgr);
-			return ProgramMapper.toProgramDto(programRepository.save(programModel));
-		}
-		throw exception(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programCreationReq.getName());
+		throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND);
 
 	}
 
@@ -106,43 +116,46 @@ public class ProgramServiceImpl implements ProgramService {
 	 * 
 	 * @param programDto
 	 * @return programDto
+	 * @throws JsonProcessingException
 	 */
 
 	@Override
-	public ProgramDto updateProgram(ProgramUpateRequest programUpdateRequest) {
-		Account selAccount = null;
-		User selProgramMgr = null;
+	public ProgramDto updateProgram(ProgramUpateRequest programUpdateReq) throws JsonProcessingException {
+		String accountId = programUpdateReq.getAccountId();
+		String programName = programUpdateReq.getName();
+		String userId = programUpdateReq.getUserId();
+		String programId = programUpdateReq.getProgramId();
 
-		// Get the account object
-		Optional<Account> account = accountRepository.findById(programUpdateRequest.getAccountId());
+		Optional<Program> existingProgram = programRepository.findById(programId);
 
-		if (account.isPresent()) {
-			selAccount = account.get();
-		} else {
-			throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programUpdateRequest.getAccountId());
+		if (existingProgram.isPresent()) {
+			Optional<Account> acc = accountRepository.findById(accountId);
+			if (acc.isPresent()) {
+				Account account = acc.get();
+				Optional<User> user = userRepository.findById(userId);
+				if (user.isPresent()) {
+					User programMgr = user.get();
+					if (!programName.equalsIgnoreCase(existingProgram.get().getProgramName())) {
+						Optional<Program> programWithNameModel = Optional
+								.ofNullable(programRepository.findByProgramNameAndAccountId(programName, account));
+						if (programWithNameModel.isPresent()) {
+							throw exceptionWithId(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programName,
+									"Duplicate program name under the same Account");
+						}
+					}
+					existingProgram.get().setProgramName(programName.toLowerCase()).setAccount(account)
+							.setProgramMgr(programMgr);
+
+					Program updatedProgram = programRepository.save(existingProgram.get());
+					updateUserRoles(programMgr, account, updatedProgram);
+					return ProgramMapper.toProgramDto(updatedProgram);
+
+				}
+				throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND);
+			}
+			throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programName);
 		}
-
-		// Get the user object
-		Optional<User> programMgr = userRepository.findById(programUpdateRequest.getUserId());
-
-		if (programMgr.isPresent()) {
-			selProgramMgr = programMgr.get();
-		} else {
-			throw exception(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, programUpdateRequest.getUserId());
-		}
-
-		// Patch/update the program
-		Optional<Program> program = programRepository.findById(programUpdateRequest.getProgramId());
-
-		if (program.isPresent()) {
-			Program programModel = program.get();
-			programModel.setProgramName(programUpdateRequest.getName()).setAccount(selAccount)
-					.setProgramMgr(selProgramMgr);
-
-			return ProgramMapper.toProgramDto(programRepository.save(programModel));
-		}
-		throw exception(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, programUpdateRequest.getName());
-
+		throw exception(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND);
 	}
 
 	/***
@@ -180,6 +193,45 @@ public class ProgramServiceImpl implements ProgramService {
 	private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id,
 			String... args) {
 		return TRMSException.throwExceptionWithId(entityType, exceptionType, id, args);
+	}
+
+	/***
+	 * Insert entry at userrole TODO: Move to common utility
+	 * 
+	 * @param user
+	 * @param account
+	 * @param program
+	 */
+	private void createUserRoles(User user, Account account, Program program) {
+		Role role = roleRepository.findByRole(UserRoles.PROGRAM_MANAGER.name());
+		UserRole userRole = new UserRole().setUser(user).setAccount(account).setProgram(program).setRole(role);
+		userRoleRepository.save(userRole);
+
+		user.setRoles(new HashSet<>(Arrays.asList(role)));
+		userRepository.save(user);
+	}
+
+	/**
+	 * TODO: Move to common utility
+	 * 
+	 * @param user
+	 * @param account
+	 * @param program
+	 * @throws JsonProcessingException
+	 */
+	private void updateUserRoles(User user, Account account, Program program) throws JsonProcessingException {
+		Role role = roleRepository.findByRole(UserRoles.PROGRAM_MANAGER.name());
+		UserRole existingUserRole = userRoleRepository.findByRoleIdAndAccountAndProgram(role.getId(), account, program);
+
+		if (existingUserRole == null) {
+			createUserRoles(user, account, program);
+		} else {
+			existingUserRole.setUser(user);
+			userRoleRepository.save(existingUserRole);
+			user.setRoles(new HashSet<>(Arrays.asList(role)));
+			userRepository.save(user);
+		}
+
 	}
 
 }
