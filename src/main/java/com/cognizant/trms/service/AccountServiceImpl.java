@@ -61,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
 //        String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(accountRepository.findByaccountName(accName));
 //        log.debug("GET ACCOUNT BY NAME " + reqString);
 
-        Optional<Account> account = Optional.ofNullable(accountRepository.findByaccountName(accName.toLowerCase()));
+        Optional<Account> account = Optional.ofNullable(accountRepository.findByaccountNameIgnoreCase(accName));
         if(account.isPresent()) {
             //return modelMapper.map(account.get(), AccountDto.class);
             return AccountMapper.toAccountDto(account.get());
@@ -103,7 +103,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountDto> getAccountsByBusinessUnitName(String Name) {
-        BusinessUnit businessUnit = businessUnitRepository.findBybuName(Name.toLowerCase());
+        BusinessUnit businessUnit = businessUnitRepository.findBybuNameIgnoreCase(Name);
         if (businessUnit != null) {
 
             List<Account> accounts = accountRepository.findByBusinessUnit(businessUnit);
@@ -133,7 +133,7 @@ public class AccountServiceImpl implements AccountService {
                 if (user.isPresent()) {
 
                     Account account1 = new Account()
-                            .setAccountName(accountName.toLowerCase())
+                            .setAccountName(accountName)
                             .setBusinessUnit(bu)
                             .setHiringManger(user.get());
                     //.setUserId(user.get().getId());
@@ -192,7 +192,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountDto updateAccount(AccountCreationRequest accountCreationRequest) throws JsonProcessingException {
         String buId = accountCreationRequest.getBusinessUnitId();
-        String accountName = accountCreationRequest.getAccountName().toLowerCase();
+        String accountName = accountCreationRequest.getAccountName();
         String accountId = accountCreationRequest.getId();
         Optional<Account> existingAccount = accountRepository.findById(accountId);
         if (existingAccount.isPresent()) {
@@ -228,7 +228,7 @@ public class AccountServiceImpl implements AccountService {
                         }
                     }
                     existingAccount.get()
-                            .setAccountName(accountName.toLowerCase())
+                            .setAccountName(accountName)
                             .setHiringManger(user.get())
                             //.setUserId(user.get().getId())
                             .setBusinessUnit(bu);
