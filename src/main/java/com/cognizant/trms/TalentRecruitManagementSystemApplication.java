@@ -69,7 +69,7 @@ public class TalentRecruitManagementSystemApplication {
 				roleRepository.save(tmRole);
 			}
 
-			BusinessUnit businessUnit = businessUnitRepository.findBybuName("CMT");
+			BusinessUnit businessUnit = businessUnitRepository.findBybuNameIgnoreCase("CMT");
 			if (businessUnit == null) {
 				businessUnit = new BusinessUnit();
 				businessUnit.setBuName("CMT");
@@ -145,7 +145,7 @@ public class TalentRecruitManagementSystemApplication {
 
 			// Create an Pearson account if it isn't already exist and assign a Hiring
 			// Manager
-			Account account = accountRepository.findByaccountName("Pearson");
+			Account account = accountRepository.findByaccountNameIgnoreCase("Pearson");
 			if (account == null) {
 				account = new Account();
 				account.setAccountName("Pearson");
