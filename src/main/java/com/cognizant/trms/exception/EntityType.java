@@ -9,6 +9,7 @@ public enum EntityType {
     ACCOUNT,
     BUSINESSUNIT,
     TEAM,
-    PROGRAM
+    PROGRAM,
+    SERVICEORDER
 
 }
