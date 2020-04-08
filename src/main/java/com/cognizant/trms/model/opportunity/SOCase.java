@@ -29,8 +29,8 @@ public class SOCase {
     private String status;
     private Integer numberOfSelected;
     private Integer numberOfFilled;
-//    @DBRef(lazy = true)
-//    private List<CaseMappedCandidate> caseMappedCandidates;
+    @DBRef(lazy = true)
+    private List<CaseCandidate> caseCandidates;
 
 
 }

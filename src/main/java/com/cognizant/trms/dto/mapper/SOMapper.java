@@ -1,13 +1,19 @@
 package com.cognizant.trms.dto.mapper;
 
 import com.cognizant.trms.controller.v1.request.CaseCreateRequest;
+import com.cognizant.trms.dto.model.opportunity.CandidateDto;
+import com.cognizant.trms.dto.model.opportunity.SOCandidateDto;
 import com.cognizant.trms.dto.model.opportunity.SOCaseDto;
 import com.cognizant.trms.dto.model.opportunity.SODto;
+import com.cognizant.trms.model.opportunity.Candidate;
 import com.cognizant.trms.model.opportunity.SO;
+import com.cognizant.trms.model.opportunity.SOCandidate;
 import com.cognizant.trms.model.opportunity.SOCase;
 import org.modelmapper.ModelMapper;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*
@@ -26,6 +32,7 @@ public class SOMapper {
     }
 
     public static SODto toSODto(SO so, List<SOCase> cases){
+        List<SOCandidate>  soCandidateList = Optional.ofNullable(so.getCandidates()).orElse(Collections.emptyList());
 
         return new SODto()
                 .setCases(cases
@@ -37,6 +44,28 @@ public class SOMapper {
                 .setLocation(so.getLocation())
                 .setPositionCount(so.getPositionCount())
                 .setServiceOrder(so.getServiceOrder())
-                .setTeamId(so.getTeamId());
+                .setTeamId(so.getTeamId())
+                .setSoCandidateDtos(soCandidateList
+                        .stream()
+                        .filter(soCandidate -> soCandidate!=null)
+                        .map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
+                        .collect(Collectors.toList()));
+    }
+    public static SODto toSODtoNoCase(SO so){
+        List<SOCandidate>  soCandidateList = Optional.ofNullable(so.getCandidates()).orElse(Collections.emptyList());
+
+        return new SODto()
+
+                .setCreatedBy(so.getCreatedBy())
+                .setId(so.getId())
+                .setLocation(so.getLocation())
+                .setPositionCount(so.getPositionCount())
+                .setServiceOrder(so.getServiceOrder())
+                .setTeamId(so.getTeamId())
+                .setSoCandidateDtos(soCandidateList
+                        .stream()
+                        .filter(soCandidate -> soCandidate!=null)
+                        .map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
+                        .collect(Collectors.toList()));
     }
 }

@@ -1,20 +1,26 @@
 package com.cognizant.trms.service;
 
-import com.cognizant.trms.controller.v1.request.CaseCreateRequest;
+import com.cognizant.trms.controller.v1.request.MapCandidateToSo;
 import com.cognizant.trms.controller.v1.request.SOCreateRequest;
 import com.cognizant.trms.dto.mapper.SOMapper;
 import com.cognizant.trms.dto.model.opportunity.SODto;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
+import com.cognizant.trms.model.opportunity.Candidate;
 import com.cognizant.trms.model.opportunity.SO;
+import com.cognizant.trms.model.opportunity.SOCandidate;
 import com.cognizant.trms.model.opportunity.SOCase;
+import com.cognizant.trms.repository.opportunity.SOCandidateRepository;
 import com.cognizant.trms.repository.opportunity.SOCaseRepository;
 import com.cognizant.trms.repository.opportunity.SORepository;
+import com.cognizant.trms.repository.user.CandidateRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.ObjPtr;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /*
     Author: Aravindan Dandapani
@@ -39,6 +44,15 @@ public class SOServiceServiceImpl implements SOService {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    SOCandidateRepository soCandidateRepository;
+
+    @Autowired
+    CandidateRepository candidateRepository;
+
+    @Autowired
+    ModelMapper modelMapper;
 
 
     @Override
@@ -77,6 +91,33 @@ public class SOServiceServiceImpl implements SOService {
     @Override
     public List<SODto> getSOByLoginUser() {
         return null;
+    }
+
+    @Override
+    public SODto addCandidateToSo(MapCandidateToSo mapCandidateToSo) {
+        String candidateId = mapCandidateToSo.getCandidateId();
+        String soId = mapCandidateToSo.getSoId();
+        Optional<SO> existingSo = soRepository.findById(soId);
+        if (existingSo.isPresent()) {
+            Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+            if (candidate.isPresent()) {
+                SOCandidate soCandidate = new SOCandidate()
+                        .setCandidate(candidate.get())
+                        .setActive(mapCandidateToSo.isActive())
+                        .setSoId(mapCandidateToSo.getSoId());
+                soCandidateRepository.save(soCandidate);
+
+                //Updating the SO_CANDIDATE ref in SO collection
+                if(existingSo.get().getCandidates() == null) {
+                    existingSo.get().setCandidates(new ArrayList<>());
+                }
+                    existingSo.get().getCandidates().add(soCandidate);
+                return SOMapper.toSODtoNoCase(soRepository.save(existingSo.get()));
+                //return modelMapper.map( soRepository.save(existingSo.get()), SODto.class);
+            }
+            throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.BAD_REQUEST, candidateId + " is not found");
+        }
+        throw exceptionWithId(EntityType.SERVICEORDER, ExceptionType.BAD_REQUEST, soId + " not found");
     }
 
     private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {

@@ -33,8 +33,8 @@ public class SO {
     private Integer positionCount;
     private String location;
     private String createdBy;
-//    @DBRef(lazy = true)
-//    private List<SOMappedCandidate> candidates;
+    @DBRef(lazy = true)
+    private List<SOCandidate> candidates;
 //    @DBRef(lazy = true)
 //    private List<SOCase> cases;
 }

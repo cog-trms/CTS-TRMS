@@ -1,5 +1,6 @@
 package com.cognizant.trms.config;
 
+import com.google.common.base.Predicates;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NamingConventions;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +52,7 @@ public class TRMSConfiguration {
                 //.apis(RequestHandlerSelectors.basePackage("com.starterkit.springboot.brs.controller.v1.api"))
                 .apis(RequestHandlerSelectors.basePackage("com.cognizant.trms.controller.v1.api"))
                 .paths(PathSelectors.any())
+                .paths(Predicates.not(PathSelectors.regex("/error")))
                 .build()
                 .apiInfo(apiInfo())
                 .securitySchemes(Arrays.asList(apiKey()));

@@ -35,7 +35,7 @@ import com.cognizant.trms.repository.user.ProgramRepository;
 import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.UserRepository;
 import com.cognizant.trms.repository.user.UserRoleRepository;
-import com.cognizant.trms.util.AuthUtil;
+import com.cognizant.trms.util.TRMSUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -170,7 +170,7 @@ public class ProgramServiceImpl implements ProgramService {
 	 */
 	@Override
 	public Boolean deleteProgram(String id) {
-		if (AuthUtil.isAdmin()) {
+		if (TRMSUtil.isAdmin()) {
 			Optional<Program> program = programRepository.findById(id);
 			if (program.isPresent()) {
 				programRepository.deleteById(id);
