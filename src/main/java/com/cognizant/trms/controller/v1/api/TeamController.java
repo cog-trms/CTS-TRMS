@@ -3,11 +3,14 @@
  */
 package com.cognizant.trms.controller.v1.api;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.trms.controller.v1.request.TeamCreateRequest;
 import com.cognizant.trms.dto.model.user.TeamDto;
+import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.service.TeamService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -48,6 +52,18 @@ public class TeamController {
 	public TeamDto createTeam(@Valid @RequestBody TeamCreateRequest teamCreateRequest) throws JsonProcessingException {
 		log.debug("Inside createTeam API Method");
 		return teamService.createTeam(teamCreateRequest);
+	}
+
+	/***
+	 * Retrieve all Teams
+	 * 
+	 * @return
+	 */
+	@GetMapping("/team/all")
+	@ApiOperation(value = "API handler for getting All Team details", authorizations = {
+			@Authorization(value = "apiKey") })
+	public Response getAllTeam() throws JsonProcessingException {
+		return Response.ok().setPayload(teamService.listTeams());
 	}
 
 }

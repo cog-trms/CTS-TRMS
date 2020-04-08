@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,12 +61,21 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private UserRoleRepository userRoleRepository;
 
+	/***
+	 * Return all Team details
+	 * 
+	 * @return TeamDto
+	 */
+
 	@Override
 	public Set<TeamDto> listTeams() {
-		// TODO Auto-generated method stub
-		return null;
+		return teamRepository.findAll().stream().map(listTeams -> TeamMapper.toTeamDto(listTeams))
+				.collect(Collectors.toCollection(TreeSet::new));
 	}
 
+	/**
+	 * Create team
+	 */
 	@Override
 	public TeamDto createTeam(TeamCreateRequest teamCreateRequest) throws JsonProcessingException {
 		String programId = teamCreateRequest.getProgramId();
