@@ -2,14 +2,12 @@ package com.cognizant.trms.service;
 
 import com.cognizant.trms.controller.v1.request.BURequest;
 import com.cognizant.trms.dto.model.user.BusinessUnitDto;
-import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.user.BusinessUnit;
 import com.cognizant.trms.repository.user.BusinessUnitRepository;
-import com.cognizant.trms.util.AuthUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cognizant.trms.util.TRMSUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -83,7 +81,7 @@ public class BusinessUnitServiceImpl implements BusinessUnitService {
 
     @Override
     public Boolean deleteBU(String id) {
-        if(AuthUtil.isAdmin()){
+        if(TRMSUtil.isAdmin()){
             Optional<BusinessUnit> businessUnit = businessUnitRepository.findById(id);
             if(businessUnit.isPresent()){
                 businessUnitRepository.deleteById(id);

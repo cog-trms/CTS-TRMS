@@ -6,7 +6,8 @@ package com.cognizant.trms.exception;
 public enum ExceptionType {
     ENTITY_NOT_FOUND("not.found"),
     DUPLICATE_ENTITY("duplicate"),
-    ACCESS_DENIED("access.denied");
+    ACCESS_DENIED("access.denied"),
+    BAD_REQUEST("bad.request");
 
     String value;
 

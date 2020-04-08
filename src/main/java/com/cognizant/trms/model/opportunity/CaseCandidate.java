@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Document(collection = "casecandidate")
-public class CaseMappedCandidate {
+public class CaseCandidate {
     @Id
     private String id;
     private String soCaseId;

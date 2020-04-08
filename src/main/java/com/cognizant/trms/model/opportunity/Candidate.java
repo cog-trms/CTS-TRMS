@@ -28,4 +28,5 @@ public class Candidate {
     private String lastName;
     private boolean isActive;
 
+
 }
