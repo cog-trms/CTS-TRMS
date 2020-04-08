@@ -1,13 +1,10 @@
 package com.cognizant.trms.controller.v1.api;
 
 import com.cognizant.trms.controller.v1.request.BURequest;
-import com.cognizant.trms.controller.v1.request.UserSignupRequest;
 import com.cognizant.trms.dto.model.user.BusinessUnitDto;
 import com.cognizant.trms.dto.response.Response;
-import com.cognizant.trms.model.user.BusinessUnit;
 import com.cognizant.trms.repository.user.BusinessUnitRepository;
 import com.cognizant.trms.service.BusinessUnitService;
-import com.cognizant.trms.util.AuthUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -15,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
-import java.util.Optional;
 
 /*
     Author: Aravindan Dandapani

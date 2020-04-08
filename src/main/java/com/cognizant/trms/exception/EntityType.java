@@ -10,6 +10,7 @@ public enum EntityType {
     BUSINESSUNIT,
     TEAM,
     PROGRAM,
-    SERVICEORDER
+    SERVICEORDER,
+    CANDIDATE
 
 }

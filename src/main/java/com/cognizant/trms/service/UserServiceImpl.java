@@ -1,19 +1,16 @@
 package com.cognizant.trms.service;
 
 import com.cognizant.trms.controller.v1.request.UserProfileRequest;
-import com.cognizant.trms.controller.v1.request.UserSignupRequest;
 import com.cognizant.trms.dto.mapper.UserMapper;
 import com.cognizant.trms.dto.mapper.UserRoleMapper;
 import com.cognizant.trms.dto.model.user.UserDto;
-import com.cognizant.trms.dto.model.user.UserRoleDto;
 import com.cognizant.trms.dto.model.user.UserRoleDtoMinimal;
-import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.model.user.*;
 import com.cognizant.trms.repository.user.*;
-import com.cognizant.trms.util.AuthUtil;
+import com.cognizant.trms.util.TRMSUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -166,7 +162,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUser(String id) {
-        if (AuthUtil.isAdmin()) {
+        if (TRMSUtil.isAdmin()) {
             Optional<User> userProfile = userRepository.findById(id);
             if (userProfile.isPresent()) {
                 userRepository.deleteById(id);

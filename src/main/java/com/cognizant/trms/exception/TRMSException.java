@@ -78,6 +78,11 @@ public class TRMSException {
             super(message);
         }
     }
+    public static class BadRequestException extends RuntimeException {
+        public BadRequestException(String message) {
+            super(message);
+        }
+    }
 
     /**
      * Returns new RuntimeException based on template and args
@@ -94,6 +99,9 @@ public class TRMSException {
         }
         else if (ExceptionType.ACCESS_DENIED.equals(exceptionType)) {
             return new AccessDeniedException(format(messageTemplate, args));
+        }
+        else if (ExceptionType.BAD_REQUEST.equals(exceptionType)) {
+            return new BadRequestException(format(messageTemplate, args));
         }
         return new RuntimeException(format(messageTemplate, args));
     }

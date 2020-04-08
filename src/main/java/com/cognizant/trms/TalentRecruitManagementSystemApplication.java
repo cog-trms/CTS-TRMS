@@ -19,6 +19,7 @@ import java.util.Set;
  */
 @SpringBootApplication
 public class TalentRecruitManagementSystemApplication {
+
 	private static final Logger log = LogManager.getLogger(TalentRecruitManagementSystemApplication.class);
 
 	public static void main(String[] args) {
@@ -68,7 +69,7 @@ public class TalentRecruitManagementSystemApplication {
 				roleRepository.save(tmRole);
 			}
 
-			BusinessUnit businessUnit = businessUnitRepository.findBybuName("CMT");
+			BusinessUnit businessUnit = businessUnitRepository.findBybuNameIgnoreCase("CMT");
 			if (businessUnit == null) {
 				businessUnit = new BusinessUnit();
 				businessUnit.setBuName("CMT");
@@ -84,6 +85,7 @@ public class TalentRecruitManagementSystemApplication {
 						.setRoles(new HashSet<>(Arrays.asList(adminRole)));
 				userRepository.save(admin);
 			}
+
 //            UserRole adminUserRole = new UserRole()
 //                    .setRoleId(adminRole.getId())
 //                    .setUserid(admin.getId());
@@ -100,6 +102,7 @@ public class TalentRecruitManagementSystemApplication {
 //                adminUser.get().getUserroles().add(adminUserRole);
 //                userRepository.save(adminUser.get());
 //            }
+
 
 			// Create an HiringManager/AccountManager
 			User hiringManager = userRepository.findByEmail("hm@gmail.com");
@@ -142,7 +145,7 @@ public class TalentRecruitManagementSystemApplication {
 
 			// Create an Pearson account if it isn't already exist and assign a Hiring
 			// Manager
-			Account account = accountRepository.findByaccountName("Pearson");
+			Account account = accountRepository.findByaccountNameIgnoreCase("Pearson");
 			if (account == null) {
 				account = new Account();
 				account.setAccountName("Pearson");
@@ -166,6 +169,7 @@ public class TalentRecruitManagementSystemApplication {
 					Set<Role> roles = new HashSet<>();
 					hm.get().setRoles(roles);
 					hm.get().getRoles().add(hmRole);
+
 //                    Set<UserRole> userroles = new HashSet<>();
 //                    hm.get().setUserroles(userroles);
 //                    hm.get().getUserroles().add(userRoles);

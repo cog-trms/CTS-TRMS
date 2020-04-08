@@ -16,11 +16,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Document(collection = "socandidate")
-public class SOMappedCandidate {
+public class SOCandidate {
     @Id
     private String id;
     private String soId;
+    //private String candidateId;
     @DBRef(lazy = true)
     private Candidate candidate;
-    private boolean isActive;
+    private boolean isActive = true;
 }
