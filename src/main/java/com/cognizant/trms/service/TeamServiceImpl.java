@@ -4,6 +4,7 @@
 package com.cognizant.trms.service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cognizant.trms.controller.v1.request.TeamCreateRequest;
 import com.cognizant.trms.dto.mapper.TeamMapper;
@@ -34,7 +36,9 @@ import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.TeamRepository;
 import com.cognizant.trms.repository.user.UserRepository;
 import com.cognizant.trms.repository.user.UserRoleRepository;
+import com.cognizant.trms.util.TRMSUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Vara Kotha
@@ -45,6 +49,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class TeamServiceImpl implements TeamService {
 
 	private static final Logger log = LogManager.getLogger(TeamServiceImpl.class);
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private ProgramRepository programRepository;
@@ -67,6 +74,9 @@ public class TeamServiceImpl implements TeamService {
 	 * @return TeamDto
 	 */
 
+	/**
+	 * List all teams
+	 */
 	@Override
 	public Set<TeamDto> listTeams() {
 		return teamRepository.findAll().stream().map(listTeams -> TeamMapper.toTeamDto(listTeams))
@@ -80,7 +90,7 @@ public class TeamServiceImpl implements TeamService {
 	public TeamDto createTeam(TeamCreateRequest teamCreateRequest) throws JsonProcessingException {
 		String programId = teamCreateRequest.getProgramId();
 		String teamName = teamCreateRequest.getTeamName();
-		String teamMembers = teamCreateRequest.getTeamMembers();
+		String[] teamMemberIdsSelected = teamCreateRequest.getTeamMembers();
 
 		Optional<Program> prog = programRepository.findById(programId);
 
@@ -88,16 +98,20 @@ public class TeamServiceImpl implements TeamService {
 			Program program = prog.get();
 			Optional<Team> team = Optional.ofNullable(teamRepository.findByteamNameAndProgram(teamName, program));
 			if (!team.isPresent()) {
-				Optional<User> user = userRepository.findById(teamMembers);
-				if (user.isPresent()) {
-					User teamMember = user.get();
-					Team teamModel = new Team().setTeamName(teamName.toLowerCase()).setProgram(program)
-							.setTeamMembers(new HashSet<>(Arrays.asList(teamMember)));
-					teamModel = teamRepository.save(teamModel);
-					createUserRoles(program.getProgramMgr(), program.getAccount(), program, teamModel);
-					return TeamMapper.toTeamDto(teamModel);
-				}
 
+				if (teamMemberIdsSelected != null) {
+					Set<String> teamMembers = Arrays.stream(teamMemberIdsSelected).collect(Collectors.toSet());
+					Set<User> teamMembersSet = getAllTeamMembers(teamMembers);
+					if (!teamMembersSet.isEmpty()) {
+						Team teamModel = new Team().setTeamName(teamName.toLowerCase()).setProgram(program)
+								.setTeamMembers(teamMembersSet);
+						teamModel = teamRepository.save(teamModel);
+						createUserRoles(program.getProgramMgr(), program.getAccount(), program, teamModel);
+						return TeamMapper.toTeamDto(teamModel);
+					}
+					throw exceptionWithId(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, teamName,
+							"Team members not found");
+				}
 				throw exceptionWithId(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, teamName,
 						"Team members not found");
 			}
@@ -106,28 +120,66 @@ public class TeamServiceImpl implements TeamService {
 		throw exceptionWithId(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, programId);
 	}
 
+	@Transactional(readOnly = true)
+	public Set<User> getAllTeamMembers(Set<String> teamMemberIds) {
+		Iterable<User> iterable = userRepository.findAllById(teamMemberIds);
+		Set<User> teamSet = new HashSet<User>((Collection<? extends User>) iterable);
+		return teamSet;
+	}
+
 	@Override
 	public TeamDto updateTeam(TeamCreateRequest TeamCreateRequest) throws JsonProcessingException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * @param teamId
+	 * @return deleted or not
+	 */
 	@Override
 	public Boolean deleteTeam(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		if (TRMSUtil.isAdmin()) {
+			Optional<Team> team = teamRepository.findById(id);
+			if (team.isPresent()) {
+				teamRepository.deleteById(id);
+				return true;
+			}
+			throw exceptionWithId(EntityType.TEAM, ExceptionType.ENTITY_NOT_FOUND, id);
+		}
+		throw exceptionWithId(EntityType.TEAM, ExceptionType.ACCESS_DENIED,
+				" Only an admin user can perform this operation");
 	}
 
+	/**
+	 *
+	 * @param programId
+	 * @return List of Teams
+	 */
 	@Override
-	public List<TeamDto> getTeamsByProgramId(String Id) throws JsonProcessingException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<TeamDto> getTeamsByProgramId(String programId) throws JsonProcessingException {
+		Optional<Program> prog = programRepository.findById(programId);
+		if (prog.isPresent()) {
+			Program program = prog.get();
+			List<Team> teams = teamRepository.findByProgram(program);
+			String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(teams);
+			log.debug("GET PROGRAM BY NAME " + reqString);
+			if (!teams.isEmpty()) {
+				return teams.stream().filter(team -> team != null).map(team -> TeamMapper.toTeamDto(team))
+						.collect(Collectors.toList());
+			}
+			throw exceptionWithId(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, program.getProgramName());
+		}
+		throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programId);
 	}
 
 	@Override
 	public TeamDto getTeamsById(String Id) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Team> team = teamRepository.findById(Id);
+		if (team.isPresent()) {
+			return TeamMapper.toTeamDto(team.get());
+		}
+		throw exceptionWithId(EntityType.TEAM, ExceptionType.ENTITY_NOT_FOUND, Id);
 	}
 
 	/***
@@ -146,18 +198,6 @@ public class TeamServiceImpl implements TeamService {
 
 		user.setRoles(new HashSet<>(Arrays.asList(role)));
 		userRepository.save(user);
-	}
-
-	/**
-	 * Returns a new RuntimeException TODO: Need to move common utility logic
-	 * 
-	 * @param entityType
-	 * @param exceptionType
-	 * @param args
-	 * @return
-	 */
-	private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
-		return TRMSException.throwException(entityType, exceptionType, args);
 	}
 
 	private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id,
