@@ -11,6 +11,8 @@ public enum EntityType {
     TEAM,
     PROGRAM,
     SERVICEORDER,
-    CANDIDATE
+    CANDIDATE,
+    CASE,
+    SO_CANDIDATE
 
 }

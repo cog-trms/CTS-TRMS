@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,7 +22,8 @@ public class SOCandidate {
     @Id
     private String id;
     private String soId;
-    //private String candidateId;
+    @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
+    private String candId;
     @DBRef(lazy = true)
     private Candidate candidate;
     private boolean isActive = true;

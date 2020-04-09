@@ -1,26 +1,28 @@
-package com.cognizant.trms.model.opportunity;
+package com.cognizant.trms.dto.model.opportunity;
 
 import com.cognizant.trms.model.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /*
     Author: Aravindan Dandapani
 */
 @Getter
 @Setter
-@NoArgsConstructor
 @Accessors(chain = true)
-@Document(collection = "interview")
-public class Interview {
-    @Id
+@NoArgsConstructor
+@ToString
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class InterviewDto {
     private String id;
     private String caseCandidateId;
-   // private User panel;
+    //private User panel;
     private String panelUserId;
     private String feedback;
     private String interviewStatus;
