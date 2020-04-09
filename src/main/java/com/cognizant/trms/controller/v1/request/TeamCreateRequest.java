@@ -3,6 +3,7 @@
  */
 package com.cognizant.trms.controller.v1.request;
 
+
 import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -31,7 +32,7 @@ public class TeamCreateRequest {
 
 	@NotEmpty(message = "{constraints.NotEmpty.message}")
 	private String programId;
-
-	private String teamMembers;
+	
+	private String[] teamMembers;
 
 }

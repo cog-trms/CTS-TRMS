@@ -20,12 +20,16 @@ import java.util.Set;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TeamDto {
+public class TeamDto implements Comparable {
 
-    private String id;
-    private String teamName;
-    private ProgramDto program;
-    private Set<UserDto> teamMembers;
+	private String id;
+	private String teamName;
+	private ProgramDto program;
+	private Set<UserDto> teamMembers;
+
+	@Override
+	public int compareTo(Object arg0) {
+		return this.getTeamName().compareTo(((TeamDto) arg0).getTeamName());
+	}
 
 }
-
