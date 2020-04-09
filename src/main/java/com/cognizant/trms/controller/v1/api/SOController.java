@@ -1,5 +1,6 @@
 package com.cognizant.trms.controller.v1.api;
 
+import com.cognizant.trms.controller.v1.request.MapCandidateToCase;
 import com.cognizant.trms.controller.v1.request.MapCandidateToSo;
 import com.cognizant.trms.controller.v1.request.SOCreateRequest;
 import com.cognizant.trms.dto.response.Response;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 */
 @RestController
 @RequestMapping("/api/v1/sorders")
-@Api(value="trms-application", description="Operations pertaining to SO management in the TRMS application")
+@Api(value = "trms-application", description = "Operations pertaining to SO management in the TRMS application")
 public class SOController {
     private static final Logger log = LogManager.getLogger(SOController.class);
     @Autowired
@@ -47,18 +48,21 @@ public class SOController {
                 .setPayload(soService.createSO(soCreateRequest));
     }
 
-    @PostMapping(path = "/candidate",consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/candidate", consumes = "application/json", produces = "application/json")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response mapCandidateToSO(@Valid @RequestBody  MapCandidateToSo mapCandidateToSo) throws JsonProcessingException {
+    public Response mapCandidateToSO(@Valid @RequestBody MapCandidateToSo mapCandidateToSo) throws JsonProcessingException {
+        return Response
+                .ok()
+                .setPayload(soService.addCandidateToSo(mapCandidateToSo));
 
+    }
+    @PostMapping(path = "/candidate/case", consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response mapCandidateToCase(@Valid @RequestBody MapCandidateToCase mapCandidateToCase) throws JsonProcessingException {
+        return Response
+                .ok()
+                .setPayload(soService.addCandidateToCase(mapCandidateToCase));
 
-        //If error, just return a 400 bad request, along with the error message  --> Refer TRMSUtil.Java
-        //if (TRMSUtil.validateRequestBody(errors)) {
-            return Response
-                    .ok()
-                    .setPayload(soService.addCandidateToSo(mapCandidateToSo));
-//        }
-//        return null;
     }
 
 }
