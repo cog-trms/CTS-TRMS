@@ -9,6 +9,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface SORepository extends MongoRepository<SO, String> {
 
     SO findByServiceOrder(String so);
-    SO findByCreatedBy(String createdBy);
+    SO findByCreateUser(String createdBy);
 
 }

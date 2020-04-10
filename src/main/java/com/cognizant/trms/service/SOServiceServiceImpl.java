@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
     Author: Aravindan Dandapani
 */
 @Component
+@EnableMongoAuditing
 public class SOServiceServiceImpl implements SOService {
     private static final Logger log = LogManager.getLogger(SOServiceServiceImpl.class);
 
@@ -68,7 +70,7 @@ public class SOServiceServiceImpl implements SOService {
                     .setServiceOrder(soCreateRequest.getServiceOrder())
                     .setLocation(soCreateRequest.getLocation())
                     // VARA - TODO -- Get the user from token and update the CreatedBy Field //
-                    .setCreatedBy(soCreateRequest.getCreatedBy())
+                    //.setCreatedBy(soCreateRequest.getCreatedBy())
                     //VARA - TODO - END //
                     .setPositionCount(soCreateRequest.getPositionCount())
                     .setTeamId(soCreateRequest.getTeamId());

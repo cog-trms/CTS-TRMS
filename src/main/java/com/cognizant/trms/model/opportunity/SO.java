@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -32,9 +33,21 @@ public class SO {
     private String teamId;
     private Integer positionCount;
     private String location;
-    private String createdBy;
+   // private String createdBy;
     @DBRef(lazy = true)
     private List<SOCandidate> candidates;
     @DBRef(lazy = true)
     private List<SOCase> cases;
+
+    @CreatedBy
+    private String createUser;
+
+    @CreatedDate
+    private Date createdDate;
+
+    @LastModifiedBy
+    private String lastModifiedUser;
+
+    @LastModifiedDate
+    private Date updateDate;
 }
