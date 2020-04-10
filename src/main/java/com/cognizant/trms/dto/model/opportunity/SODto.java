@@ -28,6 +28,7 @@ public class SODto {
     private String location;
     private String createdBy;
     private List<SOCaseDto> cases;
-    private List<SOCandidateDto> soCandidateDtos;
+    private List<SOCandidateDto> soCandidates;
+
 
 }

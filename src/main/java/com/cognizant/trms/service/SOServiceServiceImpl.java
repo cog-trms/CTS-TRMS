@@ -1,24 +1,21 @@
 package com.cognizant.trms.service;
 
 import com.cognizant.trms.controller.v1.request.MapCandidateToCase;
+import com.cognizant.trms.controller.v1.request.MapCandidateToInterview;
 import com.cognizant.trms.controller.v1.request.MapCandidateToSo;
 import com.cognizant.trms.controller.v1.request.SOCreateRequest;
 import com.cognizant.trms.dto.mapper.SOMapper;
 import com.cognizant.trms.dto.model.opportunity.CaseCandidateDto;
-import com.cognizant.trms.dto.model.opportunity.SOCaseDto;
+import com.cognizant.trms.dto.model.opportunity.InterviewDto;
 import com.cognizant.trms.dto.model.opportunity.SODto;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.opportunity.*;
-import com.cognizant.trms.repository.opportunity.CaseCandidateRepository;
-import com.cognizant.trms.repository.opportunity.SOCandidateRepository;
-import com.cognizant.trms.repository.opportunity.SOCaseRepository;
-import com.cognizant.trms.repository.opportunity.SORepository;
+import com.cognizant.trms.repository.opportunity.*;
 import com.cognizant.trms.repository.user.CandidateRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.nashorn.internal.runtime.regexp.joni.encoding.ObjPtr;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -58,6 +55,9 @@ public class SOServiceServiceImpl implements SOService {
     @Autowired
     CaseCandidateRepository caseCandidateRepository;
 
+    @Autowired
+    InterviewRepository interviewRepository;
+
 
 
     @Override
@@ -67,7 +67,9 @@ public class SOServiceServiceImpl implements SOService {
             newSO = new SO()
                     .setServiceOrder(soCreateRequest.getServiceOrder())
                     .setLocation(soCreateRequest.getLocation())
+                    // VARA - TODO -- Get the user from token and update the CreatedBy Field //
                     .setCreatedBy(soCreateRequest.getCreatedBy())
+                    //VARA - TODO - END //
                     .setPositionCount(soCreateRequest.getPositionCount())
                     .setTeamId(soCreateRequest.getTeamId());
             String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(newSO);
@@ -86,6 +88,10 @@ public class SOServiceServiceImpl implements SOService {
 
                 cases = soCaseRepository.saveAll(cases);
                 log.debug("Case Response" + objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(cases));
+
+                createdSO.setCases(cases);
+                createdSO = soRepository.save(createdSO);
+
 
             }
             return SOMapper.toSODto(createdSO, cases);
@@ -142,13 +148,59 @@ public class SOServiceServiceImpl implements SOService {
                             .setSoCaseId(caseId)
                             .setSoMappedCandidateId(candidateId)
                             .setStatus(CASE_CANDIDATE_STATUS.MAPPED.getValue()); // Setting the initial value
-                    return modelMapper.map(caseCandidateRepository.save(caseCandidate), CaseCandidateDto.class);
+                    caseCandidate = caseCandidateRepository.save(caseCandidate);
+
+
+                    //START - Updating the CASE_CANDIDATE ref in CASE collection
+                    if (existingCase.get().getCaseCandidates() == null) {
+                        existingCase.get().setCaseCandidates(new ArrayList<>());
+                    }
+                    existingCase.get().getCaseCandidates().add(caseCandidate);
+                    soCaseRepository.save(existingCase.get());
+                    // END - Updating the CASE_CANDIDATE ref in CASE collection
+
+                    return modelMapper.map(caseCandidate, CaseCandidateDto.class);
                 }
                 throw exceptionWithId(EntityType.SO_CANDIDATE, ExceptionType.BAD_REQUEST, "Candidate id "+candidateId + " is not active in SO " + soCandidate.getSoId());
             }
             throw exceptionWithId(EntityType.SO_CANDIDATE, ExceptionType.BAD_REQUEST, "Candidate id "+candidateId + " is not found in SO");
         }
         throw exceptionWithId(EntityType.CASE, ExceptionType.BAD_REQUEST, caseId + " is not found");
+    }
+
+    @Override
+    public InterviewDto addCandidateToInterview(MapCandidateToInterview mapCandidateToInterview) {
+        String caseCadidateId = mapCandidateToInterview.getCaseCandidateId();
+        String candidateId = mapCandidateToInterview.getCandidateId();
+        //*****  VARA - TODO-START *****//
+        // CHECK WHETHER THE PANEL USER ID IS A TEAM MEMBER OF THE ACCOUNT/TEAM ON WHICH THIS SO HAS CREATED
+        String panelUserId = mapCandidateToInterview.getPanelUserId();
+        //*****  VARA - TODO-END *****//
+        Optional<CaseCandidate> existingCaseCandidate = caseCandidateRepository.findById(caseCadidateId);
+        if (existingCaseCandidate.isPresent()) {
+            if (existingCaseCandidate.get().getSoMappedCandidateId().equals(candidateId)) {
+                Interview interview = new Interview()
+                        .setCaseCandidateId(caseCadidateId)
+                        .setCandidateId(candidateId)
+                        .setInterviewStatus(CASE_CANDIDATE_INTERVIEW_STATUS.PANEL_ASSIGNED.getValue())
+                        .setPanelUserId(mapCandidateToInterview.getPanelUserId());
+                interview = interviewRepository.save(interview);
+
+
+                //START - Updating the INTERVIEW ref in CASE_CANDIDATE collection
+                if (existingCaseCandidate.get().getInterviews() == null) {
+                    existingCaseCandidate.get().setInterviews(new ArrayList<>());
+                }
+                existingCaseCandidate.get().getInterviews().add(interview);
+                caseCandidateRepository.save(existingCaseCandidate.get());
+                // END - Updating the INTERVIEW ref in CASE_CANDIDATE collection
+
+                return modelMapper.map(interview, InterviewDto.class);
+
+            }
+            throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.BAD_REQUEST, "Candidate id " + candidateId + " is not found in CaseCandidate " + caseCadidateId);
+        }
+        throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.BAD_REQUEST, "CaseCandidate id " + caseCadidateId + " is not found");
     }
 
     private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
@@ -167,6 +219,22 @@ public class SOServiceServiceImpl implements SOService {
         String value;
 
         CASE_CANDIDATE_STATUS(String value) {
+            this.value = value;
+        }
+
+        String getValue() {
+            return this.value;
+        }
+    }
+
+    public enum CASE_CANDIDATE_INTERVIEW_STATUS {
+        PANEL_ASSIGNED("PANEL_ASSIGNED"),
+        SCHEDULED("SCHEDULED"),
+        INTERVIEW_SLOT_REQUESTED("INTERVIEW_SLOT_REQUESTED");
+
+        String value;
+
+        CASE_CANDIDATE_INTERVIEW_STATUS(String value) {
             this.value = value;
         }
 

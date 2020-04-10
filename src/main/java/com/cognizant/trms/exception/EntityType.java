@@ -13,6 +13,7 @@ public enum EntityType {
     SERVICEORDER,
     CANDIDATE,
     CASE,
-    SO_CANDIDATE
+    SO_CANDIDATE,
+    CASE_CANDIDATE
 
 }

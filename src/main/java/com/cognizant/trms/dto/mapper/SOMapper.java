@@ -1,11 +1,9 @@
 package com.cognizant.trms.dto.mapper;
 
 import com.cognizant.trms.controller.v1.request.CaseCreateRequest;
-import com.cognizant.trms.dto.model.opportunity.CandidateDto;
 import com.cognizant.trms.dto.model.opportunity.SOCandidateDto;
 import com.cognizant.trms.dto.model.opportunity.SOCaseDto;
 import com.cognizant.trms.dto.model.opportunity.SODto;
-import com.cognizant.trms.model.opportunity.Candidate;
 import com.cognizant.trms.model.opportunity.SO;
 import com.cognizant.trms.model.opportunity.SOCandidate;
 import com.cognizant.trms.model.opportunity.SOCase;
@@ -45,7 +43,7 @@ public class SOMapper {
                 .setPositionCount(so.getPositionCount())
                 .setServiceOrder(so.getServiceOrder())
                 .setTeamId(so.getTeamId())
-                .setSoCandidateDtos(soCandidateList
+                .setSoCandidates(soCandidateList
                         .stream()
                         .filter(soCandidate -> soCandidate!=null)
                         .map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
@@ -62,7 +60,7 @@ public class SOMapper {
                 .setPositionCount(so.getPositionCount())
                 .setServiceOrder(so.getServiceOrder())
                 .setTeamId(so.getTeamId())
-                .setSoCandidateDtos(soCandidateList
+                .setSoCandidates(soCandidateList
                         .stream()
                         .filter(soCandidate -> soCandidate!=null)
                         .map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))

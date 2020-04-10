@@ -20,6 +20,7 @@ public class Interview {
     @Id
     private String id;
     private String caseCandidateId;
+    private String candidateId;
    // private User panel;
     private String panelUserId;
     private String feedback;
