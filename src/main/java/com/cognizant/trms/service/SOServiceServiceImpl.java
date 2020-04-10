@@ -84,7 +84,7 @@ public class SOServiceServiceImpl implements SOService {
 			newSO = new SO().setServiceOrder(soCreateRequest.getServiceOrder())
 					.setLocation(soCreateRequest.getLocation())
 					// VARA - TODO -- Get the user from token and update the CreatedBy Field //
-					.setCreatedBy(soCreateRequest.getCreatedBy())
+					//.setCreatedBy(soCreateRequest.getCreatedBy())
 					// VARA - TODO - END //
 					.setPositionCount(soCreateRequest.getPositionCount()).setTeamId(soCreateRequest.getTeamId());
 			String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(newSO);
@@ -252,12 +252,10 @@ public class SOServiceServiceImpl implements SOService {
 	public List<SODto> getSOByLoginUser() throws JsonProcessingException {
 		String username = TRMSUtil.loginUserName();
 		log.debug("loginUserName" + username);
-		if (username != null) {
-			User user = userRepository.findByEmail(username);
-
+	
 			// TODO: Verify whether logged in USER have HIRING_MANAGER/PROGRAM_MANAGER role
 
-			List<SO> SOList = soRepository.findByCreateUser(user.getId());
+			List<SO> SOList = soRepository.findByCreateUser(username);
 
 			if (!SOList.isEmpty()) {
 				return SOList.stream().filter(so -> so != null).map(so -> SOMapper.toSODtoNoCase(so))
@@ -265,8 +263,6 @@ public class SOServiceServiceImpl implements SOService {
 			}
 			throw exceptionWithId(EntityType.SO, ExceptionType.ENTITY_NOT_FOUND, username);
 		}
-		throw exceptionWithId(EntityType.USER, ExceptionType.ENTITY_NOT_FOUND, username);
-	}
 
 	@Override
 	public List<SOCaseDto> getCasesBySO(String soId) throws JsonProcessingException {
