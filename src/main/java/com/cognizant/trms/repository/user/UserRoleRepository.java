@@ -9,7 +9,7 @@ import java.util.Set;
 public interface UserRoleRepository extends MongoRepository<UserRole, String> {
 	UserRole findByuserId(String userId);
 
-	UserRole findByUserIdAndRoleId(String userId, String roleId);
+	List<UserRole> findByUserIdAndRoleId(String userId, String roleId);
 
 	UserRole findByRoleIdAndAccount(String roleId, Account account);
 

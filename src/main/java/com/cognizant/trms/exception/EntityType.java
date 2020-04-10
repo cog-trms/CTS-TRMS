@@ -14,6 +14,7 @@ public enum EntityType {
     CANDIDATE,
     CASE,
     SO_CANDIDATE,
-    CASE_CANDIDATE
+    CASE_CANDIDATE,
+    SO
 
 }

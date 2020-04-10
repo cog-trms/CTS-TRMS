@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -103,7 +104,6 @@ public class TalentRecruitManagementSystemApplication {
 //                userRepository.save(adminUser.get());
 //            }
 
-
 			// Create an HiringManager/AccountManager
 			User hiringManager = userRepository.findByEmail("hm@gmail.com");
 			if (hiringManager == null) {
@@ -154,14 +154,15 @@ public class TalentRecruitManagementSystemApplication {
 				// account.setUserId(hiringManager.getId());
 				accountRepository.save(account);
 
-				UserRole userRoles = userRoleRepository.findByUserIdAndRoleId(hiringManager.getId(), hmRole.getId());
-				if (userRoles == null) {
-					userRoles = new UserRole()
+				List<UserRole> userRoles = userRoleRepository.findByUserIdAndRoleId(hiringManager.getId(),
+						hmRole.getId());
+				if (userRoles.isEmpty()) {
+					UserRole userRole = new UserRole()
 							// .setUserId(hiringManager.getId())
 							// .setRoleId(hmRole.getId())
 							.setUser(hiringManager).setRole(hmRole).setAccount(account);
 
-					userRoleRepository.save(userRoles);
+					userRoleRepository.save(userRole);
 				}
 				Optional<User> hm = userRepository.findById(hiringManager.getId());
 				if (hm.isPresent()) {
@@ -183,14 +184,15 @@ public class TalentRecruitManagementSystemApplication {
 						.setProgramMgr(programManager);
 				programRepository.save(gpProgram);
 
-				UserRole pmUserRoles = userRoleRepository.findByUserIdAndRoleId(programManager.getId(), pmRole.getId());
-				if (pmUserRoles == null) {
-					pmUserRoles = new UserRole()
+				List<UserRole> pmUserRoles = userRoleRepository.findByUserIdAndRoleId(hiringManager.getId(),
+						hmRole.getId());
+				if (pmUserRoles.isEmpty()) {
+					UserRole pmUserRole = new UserRole()
 							// .setUserId(programManager.getId())
 							// .setRoleId(pmRole.getId())
 							.setUser(programManager).setRole(pmRole).setAccount(account).setProgram(gpProgram);
 
-					userRoleRepository.save(pmUserRoles);
+					userRoleRepository.save(pmUserRole);
 				}
 
 				Optional<User> pm = userRepository.findById(programManager.getId());
@@ -212,15 +214,15 @@ public class TalentRecruitManagementSystemApplication {
 						.setTeamMembers(new HashSet<>(Arrays.asList(teamMember1)));
 				teamRepository.save(plaTeam);
 
-				UserRole tmRoles = userRoleRepository.findByUserIdAndRoleId(teamMember1.getId(), tmRole.getId());
-				if (tmRoles == null) {
-					tmRoles = new UserRole()
+				List<UserRole> tmRoles = userRoleRepository.findByUserIdAndRoleId(teamMember1.getId(), tmRole.getId());
+				if (tmRoles.isEmpty()) {
+					UserRole tmUserRole = new UserRole()
 							// .setUserId(teamMember1.getId())
 							// .setRoleId(tmRole.getId())
 							.setUser(teamMember1).setRole(tmRole).setAccount(account).setProgram(gpProgram)
 							.setTeam(plaTeam);
 
-					userRoleRepository.save(tmRoles);
+					userRoleRepository.save(tmUserRole);
 				}
 				Optional<User> tm1 = userRepository.findById(teamMember1.getId());
 				if (tm1.isPresent()) {
@@ -243,15 +245,15 @@ public class TalentRecruitManagementSystemApplication {
 				plaTeam1.get().setTeamMembers(plaTeamMembers);
 				teamRepository.save(plaTeam1.get());
 
-				UserRole tmRoles2 = userRoleRepository.findByUserIdAndRoleId(teamMember2.getId(), tmRole.getId());
-				if (tmRoles2 == null) {
-					tmRoles2 = new UserRole()
+				List<UserRole> tmRoles2 = userRoleRepository.findByUserIdAndRoleId(teamMember2.getId(), tmRole.getId());
+				if (tmRoles2.isEmpty()) {
+					UserRole tmUserRole2 = new UserRole()
 							// .setUserId(teamMember2.getId())
 							// .setRoleId(tmRole.getId())
 							.setUser(teamMember2).setRole(tmRole).setAccount(account).setProgram(gpProgram)
 							.setTeam(plaTeam);
 
-					userRoleRepository.save(tmRoles2);
+					userRoleRepository.save(tmUserRole2);
 				}
 				Optional<User> tm2 = userRepository.findById(teamMember2.getId());
 				if (tm2.isPresent()) {

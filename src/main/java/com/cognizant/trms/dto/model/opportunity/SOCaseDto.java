@@ -1,5 +1,7 @@
 package com.cognizant.trms.dto.model.opportunity;
 
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -18,14 +20,22 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SOCaseDto {
-    private String id;
-    private String soId;
-    private String skill;
-    private String level;
-    private Integer numberOfPosition;
+public class SOCaseDto implements Comparable {
+	private String id;
+	private String soId;
+	private String skill;
+	private String level;
+	private Integer numberOfPosition;
 
-    private String status;
-    private Integer numberOfSelected;
-    private Integer numberOfFilled;
+	private String status;
+	private Integer numberOfSelected;
+	private Integer numberOfFilled;
+
+	private Set<CaseCandidateDto> caseCandidates;
+
+	@Override
+	public int compareTo(Object arg0) {
+		return this.getId().compareTo(((SOCaseDto) arg0).getId());
+	}
+
 }
