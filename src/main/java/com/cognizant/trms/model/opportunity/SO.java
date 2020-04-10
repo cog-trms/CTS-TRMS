@@ -35,6 +35,6 @@ public class SO {
     private String createdBy;
     @DBRef(lazy = true)
     private List<SOCandidate> candidates;
-//    @DBRef(lazy = true)
-//    private List<SOCase> cases;
+    @DBRef(lazy = true)
+    private List<SOCase> cases;
 }

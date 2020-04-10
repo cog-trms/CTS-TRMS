@@ -1,6 +1,7 @@
 package com.cognizant.trms.controller.v1.api;
 
 import com.cognizant.trms.controller.v1.request.MapCandidateToCase;
+import com.cognizant.trms.controller.v1.request.MapCandidateToInterview;
 import com.cognizant.trms.controller.v1.request.MapCandidateToSo;
 import com.cognizant.trms.controller.v1.request.SOCreateRequest;
 import com.cognizant.trms.dto.response.Response;
@@ -16,10 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
@@ -64,5 +62,52 @@ public class SOController {
                 .setPayload(soService.addCandidateToCase(mapCandidateToCase));
 
     }
+
+    @PostMapping(path = "/candidate/interview", consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response mapCandidateToInterview(@Valid @RequestBody MapCandidateToInterview mapCandidateToInterview) throws JsonProcessingException {
+        return Response
+                .ok()
+                .setPayload(soService.addCandidateToInterview(mapCandidateToInterview));
+
+    }
+
+// TODO - VARA START GET CASE-CANDIDATES of a CASE
+    @GetMapping(path = "/so/case/{caseId}/candidate",  produces = "application/json")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getCaseCandidate(@PathVariable("caseId") String caseId) throws JsonProcessingException {
+        return Response
+                .ok();
+                //.setPayload(soService.addCandidateToSo(mapCandidateToSo));
+
+    }
+    // TODO - END
+
+
+    // TODO - VARA START GET CASES OF A SO
+    @GetMapping(path = "/so/{soId}/cases",  produces = "application/json")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getCases(@PathVariable("soId") String soId) throws JsonProcessingException {
+        return Response
+                .ok();
+        //.setPayload(soService.addCandidateToSo(mapCandidateToSo));
+
+    }
+    // TODO - END
+
+    // TODO - VARA START GET SO of a Logged in User
+    @GetMapping(path = "/so",  produces = "application/json")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getSo() throws JsonProcessingException {
+        return Response
+                .ok();
+        //.setPayload(soService.getSOByLoginUser());
+
+    }
+    // TODO - END
+
+
+    //TODO - List the SO's based on Account?
+    //TODO - TAG model designing  -- ARAVIND
 
 }

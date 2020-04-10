@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -27,5 +28,6 @@ public class CaseCandidate {
     private String soMappedCandidateId;
     private String status;
     private boolean onBoarded;
+    @DBRef(lazy = true)
     List<Interview> interviews;
 }
