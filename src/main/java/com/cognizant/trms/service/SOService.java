@@ -17,9 +17,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 
 public interface SOService {
-    SODto createSO(SOCreateRequest soCreateRequest) throws JsonProcessingException;
-    List<SODto> getSOByLoginUser();
-    SODto addCandidateToSo(MapCandidateToSo mapCandidateToSo);
-    CaseCandidateDto addCandidateToCase(MapCandidateToCase mapCandidateToCase);
-    InterviewDto addCandidateToInterview(MapCandidateToInterview mapCandidateToInterview);
+	SODto createSO(SOCreateRequest soCreateRequest) throws JsonProcessingException;
+
+	List<SODto> getSOByLoginUser() throws JsonProcessingException;
+
+	List<SOCaseDto> getCasesBySO(String soId) throws JsonProcessingException;
+
+	List<CaseCandidateDto> getCaseCandidateByCaseId(String caseId) throws JsonProcessingException;
+
+	SODto addCandidateToSo(MapCandidateToSo mapCandidateToSo);
+
+	CaseCandidateDto addCandidateToCase(MapCandidateToCase mapCandidateToCase);
+
+	InterviewDto addCandidateToInterview(MapCandidateToInterview mapCandidateToInterview);
 }
