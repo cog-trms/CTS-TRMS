@@ -37,7 +37,7 @@ public class SOMapper {
                         .stream()
                         .map(caseM -> new ModelMapper().map(caseM, SOCaseDto.class))
                         .collect(Collectors.toList()))
-                .setCreatedBy(so.getCreatedBy())
+               // .setCreatedBy(so.getCreatedBy())
                 .setId(so.getId())
                 .setLocation(so.getLocation())
                 .setPositionCount(so.getPositionCount())
@@ -54,7 +54,7 @@ public class SOMapper {
 
         return new SODto()
 
-                .setCreatedBy(so.getCreatedBy())
+                .setCreatedBy(so.getCreateUser())
                 .setId(so.getId())
                 .setLocation(so.getLocation())
                 .setPositionCount(so.getPositionCount())

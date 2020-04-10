@@ -11,7 +11,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 */
 public interface SORepository extends MongoRepository<SO, String> {
 
-	SO findByServiceOrder(String so);
 
-	List<SO> findByCreatedBy(String createdBy);
+    SO findByServiceOrder(String so);
+    List<SO> findByCreateUser(String createdBy);
+
+
 }

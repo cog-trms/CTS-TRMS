@@ -28,6 +28,10 @@ import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+
+
+
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -40,7 +44,10 @@ import java.util.stream.Collectors;
     Author: Aravindan Dandapani
 */
 @Component
+@EnableMongoAuditing
 public class SOServiceServiceImpl implements SOService {
+
+    
 	private static final Logger log = LogManager.getLogger(SOServiceServiceImpl.class);
 
 	@Autowired
@@ -250,7 +257,7 @@ public class SOServiceServiceImpl implements SOService {
 
 			// TODO: Verify whether logged in USER have HIRING_MANAGER/PROGRAM_MANAGER role
 
-			List<SO> SOList = soRepository.findByCreatedBy(user.getId());
+			List<SO> SOList = soRepository.findByCreateUser(user.getId());
 
 			if (!SOList.isEmpty()) {
 				return SOList.stream().filter(so -> so != null).map(so -> SOMapper.toSODtoNoCase(so))
@@ -284,4 +291,5 @@ public class SOServiceServiceImpl implements SOService {
 		}
 		throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.ENTITY_NOT_FOUND, soCaseId);
 	}
+
 }
