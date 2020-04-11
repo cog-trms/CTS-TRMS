@@ -21,11 +21,16 @@ import lombok.experimental.Accessors;
 
 public class ProgramDto implements Comparable{
     private String id;
-
     private String programName;
+    private String accountId;
+    private String accountName;
+    private String programMgrId;
+    private String programMgrFirstName;
+    private String programMgrLastName;
+    private String programMgrEmail;
     private AccountDto account;
-    //private String programMgrId;
     private UserDto programManager;
+    
 
 	@Override
 	public int compareTo(Object o) {

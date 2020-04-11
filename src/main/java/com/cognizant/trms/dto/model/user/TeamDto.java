@@ -24,6 +24,8 @@ public class TeamDto implements Comparable {
 
 	private String id;
 	private String teamName;
+    private AccountDto account;
+    private UserDto programManager;
 	private ProgramDto program;
 	private Set<UserDto> teamMembers;
 

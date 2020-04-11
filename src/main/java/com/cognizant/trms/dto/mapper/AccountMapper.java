@@ -2,8 +2,11 @@ package com.cognizant.trms.dto.mapper;
 
 import com.cognizant.trms.dto.model.user.AccountDto;
 import com.cognizant.trms.dto.model.user.BusinessUnitDto;
+import com.cognizant.trms.dto.model.user.ProgramDto;
 import com.cognizant.trms.dto.model.user.UserDto;
 import com.cognizant.trms.model.user.Account;
+import com.cognizant.trms.model.user.Program;
+
 import org.modelmapper.ModelMapper;
 
 

@@ -31,4 +31,15 @@ public class ProgramMapper {
 						.setLastName(programMgr.getLastName()));
 	}
 
+	public static ProgramDto toProgramNameDto(Program program) {
+
+		return new ProgramDto().setProgramName(program.getProgramName()).setId(program.getId())
+				.setAccountId(program.getAccount().getId()).setAccountName(program.getAccount().getAccountName())
+				.setProgramMgrId(program.getProgramMgr().getId())
+				.setProgramMgrFirstName(program.getProgramMgr().getFirstName())
+				.setProgramMgrLastName(program.getProgramMgr().getLastName())
+				.setProgramMgrEmail(program.getProgramMgr().getEmail());
+
+	}
+
 }

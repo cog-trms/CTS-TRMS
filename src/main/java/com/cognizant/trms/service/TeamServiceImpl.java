@@ -5,8 +5,10 @@ package com.cognizant.trms.service;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,7 +21,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cognizant.trms.controller.v1.request.TeamCreateRequest;
+import com.cognizant.trms.dto.mapper.ProgramMapper;
 import com.cognizant.trms.dto.mapper.TeamMapper;
+import com.cognizant.trms.dto.model.user.ProgramDto;
 import com.cognizant.trms.dto.model.user.TeamDto;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
@@ -168,10 +172,39 @@ public class TeamServiceImpl implements TeamService {
 				return teams.stream().filter(team -> team != null).map(team -> TeamMapper.toTeamDto(team))
 						.collect(Collectors.toList());
 			}
-			throw exceptionWithId(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, program.getProgramName());
+			throw exceptionWithId(EntityType.TEAM, ExceptionType.ENTITY_NOT_FOUND, program.getProgramName());
 		}
-		throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, programId);
+		throw exceptionWithId(EntityType.PROGRAM, ExceptionType.BAD_REQUEST, programId);
 	}
+	
+	/**
+	 *
+	 * @param programId
+	 * @return List of Teams
+	 */
+	@Override
+	public Map<ProgramDto, List<TeamDto>> getTeamsListByProgramId(String programId) throws JsonProcessingException {
+		Optional<Program> prog = programRepository.findById(programId);
+		if (prog.isPresent()) {
+			Program program = prog.get();
+			Map<ProgramDto,List<TeamDto>> teamsByProgramsMap = new HashMap<ProgramDto, List<TeamDto>>();
+			ProgramDto programDto = ProgramMapper.toProgramNameDto(program);
+			List<Team> teams = teamRepository.findByProgram(program);
+			List<TeamDto> teamListDto = null;
+			String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(teams);
+			log.debug("GET PROGRAM BY NAME " + reqString);
+			if (!teams.isEmpty()) {
+				 teamListDto=teams.stream().filter(team -> team != null).map(team -> TeamMapper.toMinTeamDto(team))
+						.collect(Collectors.toList());
+				 teamsByProgramsMap.put(programDto, teamListDto);
+				return teamsByProgramsMap;
+			}
+			
+			throw exceptionWithId(EntityType.TEAM, ExceptionType.ENTITY_NOT_FOUND, program.getProgramName());
+		}
+		throw exceptionWithId(EntityType.PROGRAM, ExceptionType.BAD_REQUEST, programId);
+	}
+
 
 	@Override
 	public TeamDto getTeamsById(String Id) {
