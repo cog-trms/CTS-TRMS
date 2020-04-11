@@ -27,19 +27,8 @@ public class ProgramMapper {
 
 		return new ProgramDto().setProgramName(program.getProgramName()).setId(program.getId())
 				.setAccount(new AccountDto().setId(account.getId()).setAccountName(account.getAccountName()))
-				.setProgramManager(new UserDto().setId(programMgr.getId()).setFirstName(programMgr.getFirstName())
-						.setLastName(programMgr.getLastName()));
-	}
-
-	public static ProgramDto toProgramNameDto(Program program) {
-
-		return new ProgramDto().setProgramName(program.getProgramName()).setId(program.getId())
-				.setAccountId(program.getAccount().getId()).setAccountName(program.getAccount().getAccountName())
-				.setProgramMgrId(program.getProgramMgr().getId())
-				.setProgramMgrFirstName(program.getProgramMgr().getFirstName())
-				.setProgramMgrLastName(program.getProgramMgr().getLastName())
-				.setProgramMgrEmail(program.getProgramMgr().getEmail());
-
+				.setProgramManager(new UserDto().setId(programMgr.getId()).setEmail(programMgr.getEmail())
+						.setFirstName(programMgr.getFirstName()).setLastName(programMgr.getLastName()));
 	}
 
 }

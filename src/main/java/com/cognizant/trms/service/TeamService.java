@@ -30,6 +30,6 @@ public interface TeamService {
 
 	TeamDto getTeamsById(String Id);
 
-	Map<ProgramDto,List<TeamDto>> getTeamsListByProgramId(String programId) throws JsonProcessingException;
+	ProgramDto getTeamsListByProgramId(String programId) throws JsonProcessingException;
 
 }

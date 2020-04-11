@@ -183,12 +183,11 @@ public class TeamServiceImpl implements TeamService {
 	 * @return List of Teams
 	 */
 	@Override
-	public Map<ProgramDto, List<TeamDto>> getTeamsListByProgramId(String programId) throws JsonProcessingException {
+	public ProgramDto getTeamsListByProgramId(String programId) throws JsonProcessingException {
 		Optional<Program> prog = programRepository.findById(programId);
 		if (prog.isPresent()) {
 			Program program = prog.get();
-			Map<ProgramDto,List<TeamDto>> teamsByProgramsMap = new HashMap<ProgramDto, List<TeamDto>>();
-			ProgramDto programDto = ProgramMapper.toProgramNameDto(program);
+			ProgramDto programDto = ProgramMapper.toProgramDto(program);
 			List<Team> teams = teamRepository.findByProgram(program);
 			List<TeamDto> teamListDto = null;
 			String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(teams);
@@ -196,8 +195,8 @@ public class TeamServiceImpl implements TeamService {
 			if (!teams.isEmpty()) {
 				 teamListDto=teams.stream().filter(team -> team != null).map(team -> TeamMapper.toMinTeamDto(team))
 						.collect(Collectors.toList());
-				 teamsByProgramsMap.put(programDto, teamListDto);
-				return teamsByProgramsMap;
+				 programDto.setTeamList(teamListDto);
+				return programDto;
 			}
 			
 			throw exceptionWithId(EntityType.TEAM, ExceptionType.ENTITY_NOT_FOUND, program.getProgramName());
