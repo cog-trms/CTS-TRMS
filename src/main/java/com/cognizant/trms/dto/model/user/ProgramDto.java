@@ -1,6 +1,8 @@
 
 package com.cognizant.trms.dto.model.user;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -19,13 +21,21 @@ import lombok.experimental.Accessors;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 
+// VARA TODO: Have to add different flavor of ProgramDto constructors
+
 public class ProgramDto implements Comparable{
     private String id;
-
     private String programName;
+    private String accountId;
+    private String accountName;
+    private String programMgrId;
+    private String programMgrFirstName;
+    private String programMgrLastName;
+    private String programMgrEmail;
     private AccountDto account;
-    //private String programMgrId;
     private UserDto programManager;
+    private List<TeamDto> teamList;
+    
 
 	@Override
 	public int compareTo(Object o) {

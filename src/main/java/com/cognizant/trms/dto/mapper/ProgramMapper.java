@@ -27,8 +27,8 @@ public class ProgramMapper {
 
 		return new ProgramDto().setProgramName(program.getProgramName()).setId(program.getId())
 				.setAccount(new AccountDto().setId(account.getId()).setAccountName(account.getAccountName()))
-				.setProgramManager(new UserDto().setId(programMgr.getId()).setFirstName(programMgr.getFirstName())
-						.setLastName(programMgr.getLastName()));
+				.setProgramManager(new UserDto().setId(programMgr.getId()).setEmail(programMgr.getEmail())
+						.setFirstName(programMgr.getFirstName()).setLastName(programMgr.getLastName()));
 	}
 
 }

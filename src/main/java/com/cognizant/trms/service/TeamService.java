@@ -4,10 +4,12 @@
 package com.cognizant.trms.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.cognizant.trms.controller.v1.request.TeamCreateRequest;
 import com.cognizant.trms.dto.model.user.TeamDto;
+import com.cognizant.trms.dto.model.user.ProgramDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
@@ -27,5 +29,7 @@ public interface TeamService {
 	List<TeamDto> getTeamsByProgramId(String Id) throws JsonProcessingException;
 
 	TeamDto getTeamsById(String Id);
+
+	ProgramDto getTeamsListByProgramId(String programId) throws JsonProcessingException;
 
 }

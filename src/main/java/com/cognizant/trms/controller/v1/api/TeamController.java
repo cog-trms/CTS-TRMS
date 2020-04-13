@@ -3,7 +3,6 @@
  */
 package com.cognizant.trms.controller.v1.api;
 
-
 import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
@@ -71,7 +70,7 @@ public class TeamController {
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
 	public Response getAccountsByBuId(@PathVariable("programId") String programId) throws JsonProcessingException {
 
-		return Response.ok().setPayload(teamService.getTeamsByProgramId(programId));
+		return Response.ok().setPayload(teamService.getTeamsListByProgramId(programId));
 	}
 
 	/**
