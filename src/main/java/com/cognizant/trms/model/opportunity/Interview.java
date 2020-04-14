@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 /*
     Author: Aravindan Dandapani
@@ -25,4 +27,16 @@ public class Interview {
     private String panelUserId;
     private String feedback;
     private String interviewStatus;
+
+    @CreatedBy
+    private String createdBy;
+
+    @CreatedDate
+    private Date createdDate;
+
+    @LastModifiedBy
+    private String lastModifiedBy;
+
+    @LastModifiedDate
+    private Date lastModifiedDate;
 }

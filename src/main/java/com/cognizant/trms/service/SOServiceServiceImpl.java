@@ -1,9 +1,6 @@
 package com.cognizant.trms.service;
 
-import com.cognizant.trms.controller.v1.request.MapCandidateToCase;
-import com.cognizant.trms.controller.v1.request.MapCandidateToInterview;
-import com.cognizant.trms.controller.v1.request.MapCandidateToSo;
-import com.cognizant.trms.controller.v1.request.SOCreateRequest;
+import com.cognizant.trms.controller.v1.request.*;
 import com.cognizant.trms.dto.mapper.CaseCandidateMapper;
 import com.cognizant.trms.dto.mapper.SOCaseMapper;
 import com.cognizant.trms.dto.mapper.SOMapper;
@@ -35,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
     Author: Aravindan Dandapani
@@ -204,57 +202,61 @@ public class SOServiceServiceImpl implements SOService {
 				"CaseCandidate id " + caseCadidateId + " is not found");
 	}
 
-	private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
-		return TRMSException.throwException(entityType, exceptionType, args);
+	@Override
+	public CaseCandidateDto updateCandidateStatus(CaseCandidateStatusUpdateRequest caseCandidateStatusUpdateRequest) {
+		String caseCandidateId = caseCandidateStatusUpdateRequest.getId();
+		String caseCandidateStaus = caseCandidateStatusUpdateRequest.getStatus();
+		Optional<CaseCandidate> existingCC = caseCandidateRepository.findById(caseCandidateId);
+		if (existingCC.isPresent()) {
+			if (
+					Stream.of(CASE_CANDIDATE_INTERVIEW_STATUS.values())
+							.anyMatch(v -> v.getValue().equals(caseCandidateStaus))
+			) {
+				existingCC.get().setStatus(caseCandidateStatusUpdateRequest.getStatus());
+				return modelMapper.map(caseCandidateRepository.save(existingCC.get()), CaseCandidateDto.class);
+			}
+			throw exceptionWithId(EntityType.CASE_CANDIDATE_STATUS, ExceptionType.BAD_REQUEST,
+					"Request body contains the invalid status value " + caseCandidateStaus);
+		}
+		throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.BAD_REQUEST,
+				"CaseCandidate id " + caseCandidateId + " is not found");
 	}
 
-	private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id,
-			String... args) {
-		return TRMSException.throwExceptionWithId(entityType, exceptionType, id, args);
+	@Override
+	public boolean deleteCaseCandidate(String caseCandidateId) {
+		Optional<CaseCandidate> existingCC = caseCandidateRepository.findById(caseCandidateId);
+		String caseId = existingCC.get().getSoCaseId();
+		if(existingCC.isPresent()){
+
+			caseCandidateRepository.deleteById(caseCandidateId);
+			Optional<SOCase> existingCase = soCaseRepository.findById(caseId);
+			if(existingCase.isPresent()){
+				existingCase.get().getCaseCandidates().remove(existingCC.get());
+				soCaseRepository.save(existingCase.get());
+			}
+			return true;
+		}
+		throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.BAD_REQUEST,
+				"CaseCandidate id " + caseCandidateId + " is not found");
 	}
 
-	public enum CASE_CANDIDATE_STATUS {
-		MAPPED("MAPPED"), SCHEDULED("SCHEDULED"), INTERVIEW_SLOT_REQUESTED("INTERVIEW_SLOT_REQUESTED");
-
-		String value;
-
-		CASE_CANDIDATE_STATUS(String value) {
-			this.value = value;
-		}
-
-		String getValue() {
-			return this.value;
-		}
-	}
-
-	public enum CASE_CANDIDATE_INTERVIEW_STATUS {
-		PANEL_ASSIGNED("PANEL_ASSIGNED"), SCHEDULED("SCHEDULED"), INTERVIEW_SLOT_REQUESTED("INTERVIEW_SLOT_REQUESTED");
-
-		String value;
-
-		CASE_CANDIDATE_INTERVIEW_STATUS(String value) {
-			this.value = value;
-		}
-
-		String getValue() {
-			return this.value;
-		}
-	}
 
 	@Override
 	public List<SODto> getSOByLoginUser() throws JsonProcessingException {
 		String username = TRMSUtil.loginUserName();
 		log.debug("loginUserName" + username);
 
+
 		// TODO: Verify whether logged in USER have HIRING_MANAGER/PROGRAM_MANAGER role
 
-		List<SO> SOList = soRepository.findByCreateUser(username);
+		List<SO> SOList = soRepository.findByCreatedBy(username);
 
 		if (!SOList.isEmpty()) {
 			return SOList.stream().filter(so -> so != null).map(so -> SOMapper.toSODtoNoCase(so))
 					.collect(Collectors.toList());
+
 		}
-		throw exceptionWithId(EntityType.SO, ExceptionType.ENTITY_NOT_FOUND, username);
+		throw exceptionWithId(EntityType.SERVICEORDER, ExceptionType.ENTITY_NOT_FOUND, username);
 	}
 
 	@Override
@@ -275,7 +277,7 @@ public class SOServiceServiceImpl implements SOService {
 			throw exceptionWithId(EntityType.CASE, ExceptionType.ENTITY_NOT_FOUND, soId);
 
 		}
-		throw exceptionWithId(EntityType.SO, ExceptionType.BAD_REQUEST, soId);
+		throw exceptionWithId(EntityType.SERVICEORDER, ExceptionType.BAD_REQUEST, soId);
 	}
 
 	@Override
@@ -288,6 +290,50 @@ public class SOServiceServiceImpl implements SOService {
 					.collect(Collectors.toList());
 		}
 		throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.ENTITY_NOT_FOUND, soCaseId);
+	}
+
+
+	private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
+		return TRMSException.throwException(entityType, exceptionType, args);
+	}
+
+	private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id,
+											 String... args) {
+		return TRMSException.throwExceptionWithId(entityType, exceptionType, id, args);
+	}
+
+	public enum CASE_CANDIDATE_STATUS {
+		MAPPED("MAPPED"), SCHEDULED("SCHEDULED"), INTERVIEW_SLOT_REQUESTED("INTERVIEW_SLOT_REQUESTED");
+
+		String value;
+
+		CASE_CANDIDATE_STATUS(String value) {
+			this.value = value;
+		}
+
+		String getValue() {
+			return this.value;
+		}
+	}
+
+	public enum CASE_CANDIDATE_INTERVIEW_STATUS {
+		PANEL_ASSIGNED("PANEL_ASSIGNED"),
+		SCHEDULED("SCHEDULED"),
+		INTERVIEW_SLOT_REQUESTED("INTERVIEW_SLOT_REQUESTED"),
+		INTERVIEW_IN_PROGRESS("INTERVIEW_IN_PROGRESS"),
+		SELECTED("SELECTED"),
+		IN_ACTIVE("IN_ACTIVE");
+
+
+		String value;
+
+		CASE_CANDIDATE_INTERVIEW_STATUS(String value) {
+			this.value = value;
+		}
+
+		String getValue() {
+			return this.value;
+		}
 	}
 
 }

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 */
 public class SOMapper {
 
+
 	public static SOCase toCaseReqToCase(CaseCreateRequest caseCreateRequest, String soId) {
 
 		return new SOCase().setLevel(caseCreateRequest.getLevel()).setSkill(caseCreateRequest.getSkill()).setSoId(soId)
@@ -43,11 +44,12 @@ public class SOMapper {
 		List<SOCandidate> soCandidateList = Optional.ofNullable(so.getCandidates()).orElse(Collections.emptyList());
 
 		return new SODto().setId(so.getId()).setLocation(so.getLocation()).setPositionCount(so.getPositionCount())
-				.setServiceOrder(so.getServiceOrder()).setTeamId(so.getTeamId()).setCreateUser(so.getCreateUser())
-				.setCreatedDate(so.getCreatedDate()).setLastModifiedUser(so.getLastModifiedUser())
-				.setUpdateDate(so.getUpdateDate())
+				.setServiceOrder(so.getServiceOrder()).setTeamId(so.getTeamId()).setCreateUser(so.getCreatedBy())
+				.setCreatedDate(so.getCreatedDate()).setLastModifiedUser(so.getLastModifiedBy())
+				.setUpdateDate(so.getLastModifiedDate())
 				.setSoCandidates(soCandidateList.stream().filter(soCandidate -> soCandidate != null)
 						.map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
 						.collect(Collectors.toList()));
 	}
+
 }

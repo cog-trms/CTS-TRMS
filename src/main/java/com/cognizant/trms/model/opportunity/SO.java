@@ -40,14 +40,14 @@ public class SO {
     private List<SOCase> cases;
 
     @CreatedBy
-    private String createUser;
+    private String createdBy;
 
     @CreatedDate
     private Date createdDate;
 
     @LastModifiedBy
-    private String lastModifiedUser;
+    private String lastModifiedBy;
 
     @LastModifiedDate
-    private Date updateDate;
+    private Date lastModifiedDate;
 }
