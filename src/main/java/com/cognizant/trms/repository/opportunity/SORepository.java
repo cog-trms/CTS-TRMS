@@ -13,7 +13,7 @@ public interface SORepository extends MongoRepository<SO, String> {
 
 
     SO findByServiceOrder(String so);
-    List<SO> findByCreateUser(String createdBy);
+    List<SO> findByCreatedBy(String createdBy);
 
 
 }

@@ -1,9 +1,6 @@
 package com.cognizant.trms.controller.v1.api;
 
-import com.cognizant.trms.controller.v1.request.MapCandidateToCase;
-import com.cognizant.trms.controller.v1.request.MapCandidateToInterview;
-import com.cognizant.trms.controller.v1.request.MapCandidateToSo;
-import com.cognizant.trms.controller.v1.request.SOCreateRequest;
+import com.cognizant.trms.controller.v1.request.*;
 import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.service.SOService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -86,5 +83,21 @@ public class SOController {
 
 	// TODO - List the SO's based on Account?
 	// TODO - TAG model designing -- ARAVIND
+
+	@PatchMapping(path = "/so/case/candidate", produces = "application/json")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	public Response updateCaseCandidateStatus(@Valid @RequestBody CaseCandidateStatusUpdateRequest caseCandidateStatusUpdateRequest) throws JsonProcessingException {
+		return Response
+				.ok()
+				.setPayload(soService.updateCandidateStatus(caseCandidateStatusUpdateRequest));
+	}
+
+	@DeleteMapping(path = "/so/case/candidate/{caseCandidateId}", produces = "application/json")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	public Response deleteCaseCandidateFromCase(@PathVariable("caseCandidateId") String caseCandidateId) throws JsonProcessingException {
+		return Response
+				.ok()
+				.setPayload(soService.deleteCaseCandidate(caseCandidateId));
+	}
 
 }

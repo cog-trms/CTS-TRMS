@@ -54,7 +54,7 @@ public class SOMapper {
 
         return new SODto()
 
-                .setCreatedBy(so.getCreateUser())
+                .setCreatedBy(so.getCreatedBy())
                 .setId(so.getId())
                 .setLocation(so.getLocation())
                 .setPositionCount(so.getPositionCount())

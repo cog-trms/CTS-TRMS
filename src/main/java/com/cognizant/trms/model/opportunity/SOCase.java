@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -31,6 +32,18 @@ public class SOCase {
     private Integer numberOfFilled;
     @DBRef(lazy = true)
     private List<CaseCandidate> caseCandidates;
+
+    @CreatedBy
+    private String createdBy;
+
+    @CreatedDate
+    private Date createdDate;
+
+    @LastModifiedBy
+    private String lastModifiedBy;
+
+    @LastModifiedDate
+    private Date lastModifiedDate;
 
 
 }

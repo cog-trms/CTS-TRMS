@@ -4,10 +4,7 @@ package com.cognizant.trms.service;
     Author: Aravindan Dandapani
 */
 
-import com.cognizant.trms.controller.v1.request.MapCandidateToCase;
-import com.cognizant.trms.controller.v1.request.MapCandidateToInterview;
-import com.cognizant.trms.controller.v1.request.MapCandidateToSo;
-import com.cognizant.trms.controller.v1.request.SOCreateRequest;
+import com.cognizant.trms.controller.v1.request.*;
 import com.cognizant.trms.dto.model.opportunity.CaseCandidateDto;
 import com.cognizant.trms.dto.model.opportunity.InterviewDto;
 import com.cognizant.trms.dto.model.opportunity.SOCaseDto;
@@ -30,4 +27,8 @@ public interface SOService {
 	CaseCandidateDto addCandidateToCase(MapCandidateToCase mapCandidateToCase);
 
 	InterviewDto addCandidateToInterview(MapCandidateToInterview mapCandidateToInterview);
+
+	CaseCandidateDto updateCandidateStatus(CaseCandidateStatusUpdateRequest caseCandidateStatusUpdateRequest);
+
+	boolean deleteCaseCandidate(String caseCandidateId);
 }
