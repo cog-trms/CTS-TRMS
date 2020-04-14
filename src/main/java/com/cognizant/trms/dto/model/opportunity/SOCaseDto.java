@@ -1,6 +1,6 @@
 package com.cognizant.trms.dto.model.opportunity;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -31,7 +31,7 @@ public class SOCaseDto implements Comparable {
 	private Integer numberOfSelected;
 	private Integer numberOfFilled;
 
-	private Set<CaseCandidateDto> caseCandidates;
+	private List<CaseCandidateDto> caseCandidates;
 
 	@Override
 	public int compareTo(Object arg0) {

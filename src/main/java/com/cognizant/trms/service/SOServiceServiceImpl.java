@@ -11,12 +11,10 @@ import com.cognizant.trms.dto.model.opportunity.CaseCandidateDto;
 import com.cognizant.trms.dto.model.opportunity.InterviewDto;
 import com.cognizant.trms.dto.model.opportunity.SOCaseDto;
 import com.cognizant.trms.dto.model.opportunity.SODto;
-
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.opportunity.*;
-import com.cognizant.trms.model.user.User;
 import com.cognizant.trms.repository.opportunity.*;
 import com.cognizant.trms.repository.user.CandidateRepository;
 import com.cognizant.trms.repository.user.UserRepository;
@@ -29,8 +27,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-
-
 
 import org.springframework.stereotype.Component;
 
@@ -47,7 +43,6 @@ import java.util.stream.Collectors;
 @EnableMongoAuditing
 public class SOServiceServiceImpl implements SOService {
 
-    
 	private static final Logger log = LogManager.getLogger(SOServiceServiceImpl.class);
 
 	@Autowired
@@ -74,8 +69,6 @@ public class SOServiceServiceImpl implements SOService {
 	@Autowired
 	InterviewRepository interviewRepository;
 
-	@Autowired
-	private UserRepository userRepository;
 
 	@Override
 	public SODto createSO(SOCreateRequest soCreateRequest) throws JsonProcessingException {
@@ -84,7 +77,7 @@ public class SOServiceServiceImpl implements SOService {
 			newSO = new SO().setServiceOrder(soCreateRequest.getServiceOrder())
 					.setLocation(soCreateRequest.getLocation())
 					// VARA - TODO -- Get the user from token and update the CreatedBy Field //
-					//.setCreatedBy(soCreateRequest.getCreatedBy())
+					// .setCreatedBy(soCreateRequest.getCreatedBy())
 					// VARA - TODO - END //
 					.setPositionCount(soCreateRequest.getPositionCount()).setTeamId(soCreateRequest.getTeamId());
 			String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(newSO);
@@ -252,28 +245,37 @@ public class SOServiceServiceImpl implements SOService {
 	public List<SODto> getSOByLoginUser() throws JsonProcessingException {
 		String username = TRMSUtil.loginUserName();
 		log.debug("loginUserName" + username);
-	
-			// TODO: Verify whether logged in USER have HIRING_MANAGER/PROGRAM_MANAGER role
 
-			List<SO> SOList = soRepository.findByCreateUser(username);
+		// TODO: Verify whether logged in USER have HIRING_MANAGER/PROGRAM_MANAGER role
 
-			if (!SOList.isEmpty()) {
-				return SOList.stream().filter(so -> so != null).map(so -> SOMapper.toSODtoNoCase(so))
-						.collect(Collectors.toList());
-			}
-			throw exceptionWithId(EntityType.SO, ExceptionType.ENTITY_NOT_FOUND, username);
-		}
+		List<SO> SOList = soRepository.findByCreateUser(username);
 
-	@Override
-	public List<SOCaseDto> getCasesBySO(String soId) throws JsonProcessingException {
-		List<SOCase> soCases = soCaseRepository.findBysoId(soId);
-
-		if (!soCases.isEmpty()) {
-			return soCases.stream().filter(soCase -> soCase != null).map(soCase -> SOCaseMapper.toSOCaseDto(soCase))
+		if (!SOList.isEmpty()) {
+			return SOList.stream().filter(so -> so != null).map(so -> SOMapper.toSODtoNoCase(so))
 					.collect(Collectors.toList());
 		}
-		throw exceptionWithId(EntityType.CASE, ExceptionType.ENTITY_NOT_FOUND, soId);
+		throw exceptionWithId(EntityType.SO, ExceptionType.ENTITY_NOT_FOUND, username);
+	}
 
+	@Override
+	public SODto getCasesBySO(String soId) throws JsonProcessingException {
+		// SO serviceOrder = soRepository.findByServiceOrder(soId);
+		Optional<SO> serviceOrder = soRepository.findById(soId);
+		if (serviceOrder.isPresent()) {
+			SO so = serviceOrder.get();
+			SODto soDto = SOMapper.toSODtoNoCase(so);
+			List<SOCase> soCases = soCaseRepository.findBysoId(soId);
+			List<SOCaseDto> soCaseListDto = null;
+			if (!soCases.isEmpty()) {
+				soCaseListDto = soCases.stream().filter(soCase -> soCase != null)
+						.map(soCase -> SOCaseMapper.toSOCaseDto(soCase)).collect(Collectors.toList());
+				soDto.setCases(soCaseListDto);
+				return soDto;
+			}
+			throw exceptionWithId(EntityType.CASE, ExceptionType.ENTITY_NOT_FOUND, soId);
+
+		}
+		throw exceptionWithId(EntityType.SO, ExceptionType.BAD_REQUEST, soId);
 	}
 
 	@Override
