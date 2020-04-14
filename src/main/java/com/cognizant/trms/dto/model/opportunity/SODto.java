@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -21,14 +22,17 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SODto {
-    private String id;
-    private String serviceOrder;
-    private String teamId;
-    private Integer positionCount;
-    private String location;
-    private String createdBy;
-    private List<SOCaseDto> cases;
-    private List<SOCandidateDto> soCandidates;
+	private String id;
+	private String serviceOrder;
+	private String teamId;
+	private Integer positionCount;
+	private String location;
+	private String createUser;
+	private Date createdDate;
+	private String lastModifiedUser;
+	private Date updateDate;
 
+	private List<SOCaseDto> cases;
+	private List<SOCandidateDto> soCandidates;
 
 }
