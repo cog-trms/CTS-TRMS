@@ -19,51 +19,37 @@ import java.util.stream.Collectors;
 */
 public class SOMapper {
 
-    public static SOCase toCaseReqToCase(CaseCreateRequest caseCreateRequest, String soId){
 
-        return new SOCase()
-                .setLevel(caseCreateRequest.getLevel())
-                .setSkill(caseCreateRequest.getSkill())
-                .setSoId(soId)
-                .setNumberOfPosition(caseCreateRequest.getNumberOfPosition());
+	public static SOCase toCaseReqToCase(CaseCreateRequest caseCreateRequest, String soId) {
 
-    }
+		return new SOCase().setLevel(caseCreateRequest.getLevel()).setSkill(caseCreateRequest.getSkill()).setSoId(soId)
+				.setNumberOfPosition(caseCreateRequest.getNumberOfPosition());
 
-    public static SODto toSODto(SO so, List<SOCase> cases){
-        List<SOCandidate>  soCandidateList = Optional.ofNullable(so.getCandidates()).orElse(Collections.emptyList());
+	}
 
-        return new SODto()
-                .setCases(cases
-                        .stream()
-                        .map(caseM -> new ModelMapper().map(caseM, SOCaseDto.class))
-                        .collect(Collectors.toList()))
-               // .setCreatedBy(so.getCreatedBy())
-                .setId(so.getId())
-                .setLocation(so.getLocation())
-                .setPositionCount(so.getPositionCount())
-                .setServiceOrder(so.getServiceOrder())
-                .setTeamId(so.getTeamId())
-                .setSoCandidates(soCandidateList
-                        .stream()
-                        .filter(soCandidate -> soCandidate!=null)
-                        .map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
-                        .collect(Collectors.toList()));
-    }
-    public static SODto toSODtoNoCase(SO so){
-        List<SOCandidate>  soCandidateList = Optional.ofNullable(so.getCandidates()).orElse(Collections.emptyList());
+	public static SODto toSODto(SO so, List<SOCase> cases) {
+		List<SOCandidate> soCandidateList = Optional.ofNullable(so.getCandidates()).orElse(Collections.emptyList());
 
-        return new SODto()
+		return new SODto()
+				.setCases(cases.stream().map(caseM -> new ModelMapper().map(caseM, SOCaseDto.class))
+						.collect(Collectors.toList()))
+				.setId(so.getId()).setLocation(so.getLocation()).setPositionCount(so.getPositionCount())
+				.setServiceOrder(so.getServiceOrder()).setTeamId(so.getTeamId())
+				.setSoCandidates(soCandidateList.stream().filter(soCandidate -> soCandidate != null)
+						.map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
+						.collect(Collectors.toList()));
+	}
 
-                .setCreatedBy(so.getCreatedBy())
-                .setId(so.getId())
-                .setLocation(so.getLocation())
-                .setPositionCount(so.getPositionCount())
-                .setServiceOrder(so.getServiceOrder())
-                .setTeamId(so.getTeamId())
-                .setSoCandidates(soCandidateList
-                        .stream()
-                        .filter(soCandidate -> soCandidate!=null)
-                        .map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
-                        .collect(Collectors.toList()));
-    }
+	public static SODto toSODtoNoCase(SO so) {
+		List<SOCandidate> soCandidateList = Optional.ofNullable(so.getCandidates()).orElse(Collections.emptyList());
+
+		return new SODto().setId(so.getId()).setLocation(so.getLocation()).setPositionCount(so.getPositionCount())
+				.setServiceOrder(so.getServiceOrder()).setTeamId(so.getTeamId()).setCreateUser(so.getCreatedBy())
+				.setCreatedDate(so.getCreatedDate()).setLastModifiedUser(so.getLastModifiedBy())
+				.setUpdateDate(so.getLastModifiedDate())
+				.setSoCandidates(soCandidateList.stream().filter(soCandidate -> soCandidate != null)
+						.map(soCandidate -> new ModelMapper().map(soCandidate, SOCandidateDto.class))
+						.collect(Collectors.toList()));
+	}
+
 }
