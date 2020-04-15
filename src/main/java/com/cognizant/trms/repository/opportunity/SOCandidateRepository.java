@@ -5,4 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface SOCandidateRepository extends MongoRepository <SOCandidate, String> {
     SOCandidate findByCandidateId(String candidateId);
+
 }
