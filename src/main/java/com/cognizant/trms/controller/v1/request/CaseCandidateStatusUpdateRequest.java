@@ -18,7 +18,9 @@ import javax.validation.constraints.NotEmpty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CaseCandidateStatusUpdateRequest {
     @NotEmpty(message = "case canidate id is empty")
-    private String id;
+    private String caseCandidateId;
+    @NotEmpty(message = "status is empty")
     private String status;
+
 
 }

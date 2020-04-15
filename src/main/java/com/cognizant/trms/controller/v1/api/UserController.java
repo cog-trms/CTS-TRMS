@@ -88,12 +88,14 @@ public class UserController {
 
     @GetMapping("/getTokenDetails")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response getTokenDetails(){
+    public Response getTokenDetails() throws JsonProcessingException {
       Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
        SpringUser user = new SpringUser();
        user.setUsername(principal.toString());
         List<String> roles = new ArrayList<>();
         SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().forEach(authority -> roles.add(authority.getAuthority()));
+        log.debug("GET TOKEN - ROLES LIST "+ mapper.writerWithDefaultPrettyPrinter().writeValueAsString(roles));
+
         user.setAuthorities(roles);
      return Response
                 .ok()

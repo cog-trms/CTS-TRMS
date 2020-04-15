@@ -91,6 +91,11 @@ public class MultiHttpSecurityConfig {
 
         @Bean
         CorsConfigurationSource corsConfigurationSource() {
+
+            // TODO - https://www.programcreek.com/java-api-examples/index.php?api=org.springframework.web.cors.CorsConfigurationSource
+            // TODO - Update the CORS headers to specific Domains.
+            // TODO - Eliminate the duplicate in CORSConfig.Java
+
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedOrigins(Arrays.asList("*"));
             configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));

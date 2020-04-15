@@ -29,6 +29,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
         body.put("status", status.value());
+        body.put("testMessage", "Dummy message for test");
 
         //Get all errors
         List<String> errors = ex.getBindingResult()

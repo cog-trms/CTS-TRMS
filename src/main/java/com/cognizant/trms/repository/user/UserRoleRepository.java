@@ -24,4 +24,6 @@ public interface UserRoleRepository extends MongoRepository<UserRole, String> {
 	List<UserRole> findByProgram(Program program);
 
 	List<UserRole> findByTeam(Team team);
+
+	List<UserRole> findByUser(User user);
 }

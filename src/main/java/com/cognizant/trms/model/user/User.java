@@ -41,8 +41,8 @@ public class User {
 //    @DBRef(lazy = true)
 //    private Set<UserRole> userroles;
 
-    @DBRef(lazy = true)
-    private Set<Role> roles;
+//    @DBRef(lazy = true)
+//    private Set<Role> roles;
 
 
     public String getFullName() {
