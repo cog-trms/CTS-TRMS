@@ -9,4 +9,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface CaseCandidateRepository extends MongoRepository<CaseCandidate,String> {
 	
 	List<CaseCandidate> findBysoCaseId(String soCaseId);
+	CaseCandidate findBySoCaseIdAndCandidateId(String caseId, String candidateId);
 }

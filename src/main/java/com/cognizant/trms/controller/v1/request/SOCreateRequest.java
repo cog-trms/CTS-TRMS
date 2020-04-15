@@ -24,7 +24,6 @@ public class SOCreateRequest {
     private String teamId;
     private Integer positionCount;
     private String location;
-    private String createdBy;
     List<CaseCreateRequest> cases;
 
 }

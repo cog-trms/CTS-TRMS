@@ -21,5 +21,5 @@ public class MapCandidateToCase {
     @NotEmpty(message = "case id is empty")
     private String soCaseId;
     @NotEmpty(message = "candidate id id is empty")
-    private String soMappedCandidateId;
+    private String candidateId;
 }

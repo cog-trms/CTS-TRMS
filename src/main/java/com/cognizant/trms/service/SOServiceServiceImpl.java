@@ -134,28 +134,39 @@ public class SOServiceServiceImpl implements SOService {
 
 	@Override
 	public CaseCandidateDto addCandidateToCase(MapCandidateToCase mapCandidateToCase) {
-		String candidateId = mapCandidateToCase.getSoMappedCandidateId();
+		String candidateId = mapCandidateToCase.getCandidateId();
 		String caseId = mapCandidateToCase.getSoCaseId();
+
 		Optional<SOCase> existingCase = soCaseRepository.findById(caseId);
 		if (existingCase.isPresent()) {
 			SOCandidate soCandidate = soCandidateRepository.findByCandidateId(candidateId);
 			if (soCandidate != null) {
+
 				if (soCandidate.isActive()) {
-					CaseCandidate caseCandidate = new CaseCandidate().setSoCaseId(caseId)
-							.setCandidateId(candidateId)
-							.setStatus(CASE_CANDIDATE_STATUS.MAPPED.getValue()); // Setting the initial value
 
-					caseCandidate = caseCandidateRepository.save(caseCandidate);
+					CaseCandidate existingCaseCandidate = caseCandidateRepository.findBySoCaseIdAndCandidateId(caseId, candidateId);
+					if (existingCaseCandidate == null) {
 
-					// START - Updating the CASE_CANDIDATE ref in CASE collection
-					if (existingCase.get().getCaseCandidates() == null) {
-						existingCase.get().setCaseCandidates(new ArrayList<>());
+
+						CaseCandidate caseCandidate = new CaseCandidate().setSoCaseId(caseId)
+								.setCandidateId(candidateId)
+								.setStatus(CASE_CANDIDATE_STATUS.MAPPED.getValue()); // Setting the initial value
+
+						caseCandidate = caseCandidateRepository.save(caseCandidate);
+
+						// START - Updating the CASE_CANDIDATE ref in CASE collection
+						if (existingCase.get().getCaseCandidates() == null) {
+							existingCase.get().setCaseCandidates(new ArrayList<>());
+						}
+						existingCase.get().getCaseCandidates().add(caseCandidate);
+						soCaseRepository.save(existingCase.get());
+						// END - Updating the CASE_CANDIDATE ref in CASE collection
+
+						return modelMapper.map(caseCandidate, CaseCandidateDto.class);
 					}
-					existingCase.get().getCaseCandidates().add(caseCandidate);
-					soCaseRepository.save(existingCase.get());
-					// END - Updating the CASE_CANDIDATE ref in CASE collection
+					throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.DUPLICATE_ENTITY,
+							"Candidate id " + candidateId + " is already exists in case  " + caseId);
 
-					return modelMapper.map(caseCandidate, CaseCandidateDto.class);
 				}
 				throw exceptionWithId(EntityType.SO_CANDIDATE, ExceptionType.BAD_REQUEST,
 						"Candidate id " + candidateId + " is not active in SO " + soCandidate.getSoId());
