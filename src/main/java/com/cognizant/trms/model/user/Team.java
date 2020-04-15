@@ -4,12 +4,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.Set;
 
 /*
@@ -31,4 +37,14 @@ public class Team {
     private Program program;
     @DBRef(lazy = true)
     private Set<User> teamMembers;
+    
+	/*
+	 * @CreatedBy private String createdBy;
+	 * 
+	 * @CreatedDate private Date createdDate;
+	 * 
+	 * @LastModifiedBy private String lastModifiedBy;
+	 * 
+	 * @LastModifiedDate private Date lastModifiedDate;
+	 */
 }

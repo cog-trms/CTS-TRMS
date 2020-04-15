@@ -53,6 +53,19 @@ public class TeamController {
 		log.debug("Inside createTeam API Method");
 		return teamService.createTeam(teamCreateRequest);
 	}
+	
+	/***
+	 * 
+	 * @param programCreationRequest
+	 * @return
+	 */
+	@PostMapping("/team/teamMember")
+	@ApiOperation(value = "API handler for adding new team members for existing team", authorizations = {
+			@Authorization(value = "apiKey") })
+	public TeamDto addTeamMembersToTeam(@Valid @RequestBody TeamCreateRequest teamCreateRequest) throws JsonProcessingException {
+		log.debug("Inside createTeam API Method");
+		return teamService.addTeamMembersToTeam(teamCreateRequest);
+	}
 
 	/***
 	 * Retrieve all Teams

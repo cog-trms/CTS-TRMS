@@ -5,8 +5,10 @@ package com.cognizant.trms.dto.mapper;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -16,6 +18,7 @@ import com.cognizant.trms.dto.model.user.AccountDto;
 import com.cognizant.trms.dto.model.user.ProgramDto;
 import com.cognizant.trms.dto.model.user.TeamDto;
 import com.cognizant.trms.dto.model.user.UserDto;
+import com.cognizant.trms.model.opportunity.SOCandidate;
 import com.cognizant.trms.model.user.Account;
 import com.cognizant.trms.model.user.Program;
 import com.cognizant.trms.model.user.Team;
@@ -30,6 +33,8 @@ public class TeamMapper {
 
 	public static TeamDto toTeamDto(Team team) {
 
+		Set<User> teamMemberList = Optional.ofNullable(team.getTeamMembers()).orElse(Collections.emptySet());
+		
 		Account account = team.getProgram().getAccount();
 		User programMgr = team.getProgram().getProgramMgr();
 		Program program = team.getProgram();

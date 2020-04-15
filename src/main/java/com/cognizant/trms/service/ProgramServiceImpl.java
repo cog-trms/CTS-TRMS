@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.stereotype.Component;
 
 import com.cognizant.trms.controller.v1.request.ProgramCreationRequest;
@@ -45,6 +46,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 
 @Component
+//@EnableMongoAuditing
 public class ProgramServiceImpl implements ProgramService {
 
 	private static final Logger log = LogManager.getLogger(ProgramServiceImpl.class);
