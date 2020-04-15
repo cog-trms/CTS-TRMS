@@ -15,7 +15,7 @@ public class CaseCandidateMapper {
 
 	public static CaseCandidateDto toCaseCandidateDto(CaseCandidate caseCandidate) {
 		return new CaseCandidateDto().setId(caseCandidate.getId()).setOnBoarded(caseCandidate.isOnBoarded())
-				.setSoCaseId(caseCandidate.getSoCaseId()).setSoMappedCandidateId(caseCandidate.getSoMappedCandidateId())
+				.setSoCaseId(caseCandidate.getSoCaseId()).setSoMappedCandidateId(caseCandidate.getCandidateId())
 				.setStatus(caseCandidate.getStatus());
 
 		// TODO: Set Interview List

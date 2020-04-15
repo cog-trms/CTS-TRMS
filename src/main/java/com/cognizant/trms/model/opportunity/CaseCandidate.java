@@ -25,8 +25,9 @@ public class CaseCandidate {
     @Id
     private String id;
     private String soCaseId;
-    @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
-    private String soMappedCandidateId;
+//    @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
+//    private String soMappedCandidateId;
+    private String candidateId;
     private String status;
     private boolean onBoarded;
     @DBRef(lazy = true)

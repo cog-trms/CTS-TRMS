@@ -85,7 +85,7 @@ public class SOController {
 	// TODO - TAG model designing -- ARAVIND
 
 	@PatchMapping(path = "/so/case/candidate", produces = "application/json")
-	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	@ApiOperation(value = "Update the status of Candidate in a specific caseCandidateId", authorizations = { @Authorization(value = "apiKey") })
 	public Response updateCaseCandidateStatus(@Valid @RequestBody CaseCandidateStatusUpdateRequest caseCandidateStatusUpdateRequest) throws JsonProcessingException {
 		return Response
 				.ok()
@@ -98,6 +98,14 @@ public class SOController {
 		return Response
 				.ok()
 				.setPayload(soService.deleteCaseCandidate(caseCandidateId));
+	}
+
+	@PatchMapping(path = "/so/case/candidate/{caseCandidateId}/onboard", produces = "application/json")
+	@ApiOperation(value = "Onboard a candidate in the specific case", authorizations = { @Authorization(value = "apiKey") })
+	public Response onboardCaseCandidate(@PathVariable("caseCandidateId") String caseCandidateId) throws JsonProcessingException {
+		return Response
+				.ok()
+				.setPayload(soService.onboardCaseCandidate(caseCandidateId));
 	}
 
 }

@@ -24,6 +24,13 @@ public class TRMSUtil {
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         return isAdmin = authorities.contains(new SimpleGrantedAuthority("ADMIN"));
     }
+
+    public final static boolean isHiringManager(){
+        boolean isHM = false;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        return isHM = authorities.contains(new SimpleGrantedAuthority("HIRING_MANAGER"));
+    }
     
     public final static String loginUserName() {
     	String username = null;

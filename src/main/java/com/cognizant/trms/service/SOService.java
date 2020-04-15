@@ -30,4 +30,6 @@ public interface SOService {
 	CaseCandidateDto updateCandidateStatus(CaseCandidateStatusUpdateRequest caseCandidateStatusUpdateRequest);
 
 	boolean deleteCaseCandidate(String caseCandidateId);
+
+	CaseCandidateDto onboardCaseCandidate(String caseCandidateId);
 }

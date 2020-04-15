@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
             user = new User()
                     .setEmail(userDto.getEmail().toLowerCase())
                     .setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()))
-                    .setRoles(new HashSet<>(Arrays.asList(userRole)))
+                    //.setRoles(new HashSet<>(Arrays.asList(userRole)))
                     .setFirstName(userDto.getFirstName().toLowerCase())
                     .setLastName(userDto.getLastName().toLowerCase())
                     .setMobileNumber(userDto.getMobileNumber());
@@ -223,6 +223,16 @@ public class UserServiceImpl implements UserService {
             return Collections.emptyList();
         }
         throw exception(EntityType.ACCOUNT, ExceptionType.ENTITY_NOT_FOUND, teamId);
+    }
+
+    @Override
+    public List<String> getUserRoleByUser(User user) {
+        List<UserRole> userRoleList = userRoleRepository.findByUser(user);
+        if(!userRoleList.isEmpty()){
+          List<String> roleList =  userRoleList.stream().map(userRole -> userRole.getRole().getRole()).collect(Collectors.toList());
+          return roleList;
+        }
+        return null;
     }
 
     /**
