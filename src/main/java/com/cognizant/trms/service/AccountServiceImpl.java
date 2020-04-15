@@ -159,7 +159,7 @@ public class AccountServiceImpl implements AccountService {
                 .setRole(role);
         userRoleRepository.save(userRole);
 
-        user.setRoles(new HashSet<>(Arrays.asList(role)));
+        //user.setRoles(new HashSet<>(Arrays.asList(role)));
         userRepository.save(user);
     }
 
@@ -177,13 +177,13 @@ public class AccountServiceImpl implements AccountService {
                     .setRole(role);
             userRoleRepository.save(userRole);
 
-            user.setRoles(new HashSet<>(Arrays.asList(role)));
+            //user.setRoles(new HashSet<>(Arrays.asList(role)));
             userRepository.save(user);
         } else {
             //existingUserRole.setUserId(user.getId());
             existingUserRole.setUser(user);
             userRoleRepository.save(existingUserRole);
-            user.setRoles(new HashSet<>(Arrays.asList(role)));
+            //user.setRoles(new HashSet<>(Arrays.asList(role)));
             userRepository.save(user);
         }
     }

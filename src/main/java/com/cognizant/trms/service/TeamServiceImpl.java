@@ -228,7 +228,7 @@ public class TeamServiceImpl implements TeamService {
 				.setRole(role);
 		userRoleRepository.save(userRole);
 
-		user.setRoles(new HashSet<>(Arrays.asList(role)));
+		//user.setRoles(new HashSet<>(Arrays.asList(role)));
 		userRepository.save(user);
 	}
 

@@ -88,8 +88,8 @@ public class TalentRecruitManagementSystemApplication {
 			if (admin == null) {
 				admin = new User().setEmail("admin@gmail.com")
 						.setPassword("$2a$10$7PtcjEnWb/ZkgyXyxY1/Iei2dGgGQUbqIIll/dt.qJ8l8nQBWMbYO") // "123456"
-						.setFirstName("John").setLastName("Doe").setMobileNumber("9425094250")
-						.setRoles(new HashSet<>(Arrays.asList(adminRole)));
+						.setFirstName("John").setLastName("Doe").setMobileNumber("9425094250");
+						//.setRoles(new HashSet<>(Arrays.asList(adminRole)));
 				userRepository.save(admin);
 			}
 
@@ -115,8 +115,8 @@ public class TalentRecruitManagementSystemApplication {
 			if (hiringManager == null) {
 				hiringManager = new User().setEmail("hm@gmail.com")
 						.setPassword("$2a$10$zDSewAAH8orw3knrxmQLCeGXvuERTt5m9M1cpmPIDCzGw21GEkbpO") // "123"
-						.setFirstName("Sanjay").setLastName("Hiring Manager").setMobileNumber("0005543")
-						.setRoles(new HashSet<>(Arrays.asList(initRole)));
+						.setFirstName("Sanjay").setLastName("Hiring Manager").setMobileNumber("0005543");
+						//.setRoles(new HashSet<>(Arrays.asList(initRole)));
 				userRepository.save(hiringManager);
 			}
 			// Create an ProgramManager
@@ -124,9 +124,11 @@ public class TalentRecruitManagementSystemApplication {
 			if (programManager == null) {
 				programManager = new User().setEmail("pm@gmail.com")
 						.setPassword("$2a$10$zDSewAAH8orw3knrxmQLCeGXvuERTt5m9M1cpmPIDCzGw21GEkbpO") // "123"
-						.setFirstName("Aravind").setLastName("Program Manager").setMobileNumber("1234567890")
-						.setRoles(new HashSet<>(Arrays.asList(initRole)));
+						.setFirstName("Aravind").setLastName("Program Manager").setMobileNumber("1234567890");
+						//.setRoles(new HashSet<>(Arrays.asList(initRole)));
 				userRepository.save(programManager);
+
+
 			}
 
 			// Create an ProgramManager
@@ -134,8 +136,8 @@ public class TalentRecruitManagementSystemApplication {
 			if (teamMember1 == null) {
 				teamMember1 = new User().setEmail("team1@gmail.com")
 						.setPassword("$2a$10$zDSewAAH8orw3knrxmQLCeGXvuERTt5m9M1cpmPIDCzGw21GEkbpO") // "123"
-						.setFirstName("Vara").setLastName("Team Member1").setMobileNumber("1234567890")
-						.setRoles(new HashSet<>(Arrays.asList(initRole)));
+						.setFirstName("Vara").setLastName("Team Member1").setMobileNumber("1234567890");
+						//.setRoles(new HashSet<>(Arrays.asList(initRole)));
 				userRepository.save(teamMember1);
 			}
 
@@ -144,8 +146,8 @@ public class TalentRecruitManagementSystemApplication {
 			if (teamMember2 == null) {
 				teamMember2 = new User().setEmail("team2@gmail.com")
 						.setPassword("$2a$10$zDSewAAH8orw3knrxmQLCeGXvuERTt5m9M1cpmPIDCzGw21GEkbpO") // "123"
-						.setFirstName("Ganesh").setLastName("Team Member2").setMobileNumber("1234567890")
-						.setRoles(new HashSet<>(Arrays.asList(initRole)));
+						.setFirstName("Ganesh").setLastName("Team Member2").setMobileNumber("1234567890");
+						//.setRoles(new HashSet<>(Arrays.asList(initRole)));
 				userRepository.save(teamMember2);
 			}
 
@@ -173,9 +175,9 @@ public class TalentRecruitManagementSystemApplication {
 				Optional<User> hm = userRepository.findById(hiringManager.getId());
 				if (hm.isPresent()) {
 
-					Set<Role> roles = new HashSet<>();
-					hm.get().setRoles(roles);
-					hm.get().getRoles().add(hmRole);
+//					Set<Role> roles = new HashSet<>();
+//					hm.get().setRoles(roles);
+//					hm.get().getRoles().add(hmRole);
 
 //                    Set<UserRole> userroles = new HashSet<>();
 //                    hm.get().setUserroles(userroles);
@@ -190,7 +192,7 @@ public class TalentRecruitManagementSystemApplication {
 						.setProgramMgr(programManager);
 				programRepository.save(gpProgram);
 
-				List<UserRole> pmUserRoles = userRoleRepository.findByUserIdAndRoleId(hiringManager.getId(),
+				List<UserRole> pmUserRoles = userRoleRepository.findByUserIdAndRoleId(programManager.getId(),
 						hmRole.getId());
 				if (pmUserRoles.isEmpty()) {
 					UserRole pmUserRole = new UserRole()
@@ -204,9 +206,9 @@ public class TalentRecruitManagementSystemApplication {
 				Optional<User> pm = userRepository.findById(programManager.getId());
 				if (pm.isPresent()) {
 
-					Set<Role> roles = new HashSet<>();
-					pm.get().setRoles(roles);
-					pm.get().getRoles().add(pmRole);
+//					Set<Role> roles = new HashSet<>();
+//					pm.get().setRoles(roles);
+//					pm.get().getRoles().add(pmRole);
 //                    Set<UserRole> userroles = new HashSet<>();
 //                    pm.get().setUserroles(userroles);
 //                    pm.get().getUserroles().add(pmUserRoles);
@@ -233,9 +235,9 @@ public class TalentRecruitManagementSystemApplication {
 				Optional<User> tm1 = userRepository.findById(teamMember1.getId());
 				if (tm1.isPresent()) {
 
-					Set<Role> roles = new HashSet<>();
-					tm1.get().setRoles(roles);
-					tm1.get().getRoles().add(tmRole);
+//					Set<Role> roles = new HashSet<>();
+//					tm1.get().setRoles(roles);
+//					tm1.get().getRoles().add(tmRole);
 //                    Set<UserRole> userroles = new HashSet<>();
 //                    tm1.get().setUserroles(userroles);
 //                    tm1.get().getUserroles().add(tmRoles);
@@ -264,15 +266,50 @@ public class TalentRecruitManagementSystemApplication {
 				Optional<User> tm2 = userRepository.findById(teamMember2.getId());
 				if (tm2.isPresent()) {
 
-					Set<Role> roles = new HashSet<>();
-					tm2.get().setRoles(roles);
-					tm2.get().getRoles().add(tmRole);
+//					Set<Role> roles = new HashSet<>();
+//					tm2.get().setRoles(roles);
+//					tm2.get().getRoles().add(tmRole);
 //                    Set<UserRole> userroles = new HashSet<>();
 //                    tm2.get().setUserroles(userroles);
 //                    tm2.get().getUserroles().add(tmRoles2);
 					userRepository.save(tm2.get());
 				}
 			}
+
+
+			// Updating Team model with new teamMember3
+			Optional<Team> plaTeam2 = teamRepository.findById(plaTeam.getId());
+			if (plaTeam1.isPresent()) {
+				Set<User> plaTeamMembers = new HashSet<>();
+				plaTeamMembers = plaTeam2.get().getTeamMembers();
+				plaTeamMembers.add(programManager);
+				plaTeam1.get().setTeamMembers(plaTeamMembers);
+				teamRepository.save(plaTeam2.get());
+
+				List<UserRole> tmRoles3 = userRoleRepository.findByUserIdAndRoleId(programManager.getId(), tmRole.getId());
+				if (tmRoles3.isEmpty()) {
+					UserRole tmUserRole3 = new UserRole()
+							.setUser(programManager)
+							.setRole(tmRole)
+							.setAccount(account)
+							.setProgram(gpProgram)
+							.setTeam(plaTeam);
+
+					userRoleRepository.save(tmUserRole3);
+				}
+//				Optional<User> tm2 = userRepository.findById(teamMember2.getId());
+//				if (tm2.isPresent()) {
+//
+//					Set<Role> roles = new HashSet<>();
+//					tm2.get().setRoles(roles);
+//					tm2.get().getRoles().add(tmRole);
+////                    Set<UserRole> userroles = new HashSet<>();
+////                    tm2.get().setUserroles(userroles);
+////                    tm2.get().getUserroles().add(tmRoles2);
+//					userRepository.save(tm2.get());
+//				}
+			}
+
 
 		};
 	}

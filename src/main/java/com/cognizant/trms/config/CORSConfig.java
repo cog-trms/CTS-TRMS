@@ -14,6 +14,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class CORSConfig {
         @Bean
         public WebMvcConfigurer corsConfigurer() {
+
+            // TODO - https://www.programcreek.com/java-api-examples/index.php?api=org.springframework.web.cors.CorsConfigurationSource
+            // TODO - Update the CORS headers to specific Domains.
+            // TODO - Eliminate the duplicate in MultiHttpSecurityConfig.Java
             return new WebMvcConfigurer() {
                 @Override
                 public void addCorsMappings(CorsRegistry registry) {

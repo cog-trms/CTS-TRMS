@@ -26,15 +26,15 @@ public class UserMapper {
                 .setEmail(user.getEmail())
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
-                .setMobileNumber(user.getMobileNumber())
+                .setMobileNumber(user.getMobileNumber());
 
-                .setRoles(new HashSet<RoleDto>(Optional.ofNullable(user.getRoles()).orElse(Collections.emptySet())
-                                    .stream()
-                                    .filter(Objects::nonNull)
-                                    .map(role -> new ModelMapper().map(role, RoleDto.class))
-                                    .collect(Collectors.toSet()))
-
-                    );
+//                .setRoles(new HashSet<RoleDto>(Optional.ofNullable(user.getRoles()).orElse(Collections.emptySet())
+//                                    .stream()
+//                                    .filter(Objects::nonNull)
+//                                    .map(role -> new ModelMapper().map(role, RoleDto.class))
+//                                    .collect(Collectors.toSet()))
+//
+//                    );
 
 //                .setUserRoles(
 //                        new HashSet<UserRoleDto>(Optional.ofNullable(user.getUserroles()).orElse(Collections.emptySet())

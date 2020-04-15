@@ -211,7 +211,7 @@ public class ProgramServiceImpl implements ProgramService {
 		UserRole userRole = new UserRole().setUser(user).setAccount(account).setProgram(program).setRole(role);
 		userRoleRepository.save(userRole);
 
-		user.setRoles(new HashSet<>(Arrays.asList(role)));
+		//user.setRoles(new HashSet<>(Arrays.asList(role)));
 		userRepository.save(user);
 	}
 
@@ -232,7 +232,7 @@ public class ProgramServiceImpl implements ProgramService {
 		} else {
 			existingUserRole.setUser(user);
 			userRoleRepository.save(existingUserRole);
-			user.setRoles(new HashSet<>(Arrays.asList(role)));
+			//user.setRoles(new HashSet<>(Arrays.asList(role)));
 			userRepository.save(user);
 		}
 

@@ -5,6 +5,7 @@ import com.cognizant.trms.controller.v1.request.UserSignupRequest;
 import com.cognizant.trms.dto.model.user.UserDto;
 import com.cognizant.trms.dto.model.user.UserRoleDto;
 import com.cognizant.trms.dto.model.user.UserRoleDtoMinimal;
+import com.cognizant.trms.model.user.User;
 import com.cognizant.trms.model.user.UserRole;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -53,4 +54,5 @@ public interface UserService {
     List<UserRoleDtoMinimal> getUserByAccount(String accountId);
     List<UserRoleDtoMinimal> getUserByProgram(String programId);
     List<UserRoleDtoMinimal> getUserByTeam(String teamId);
+    List<String> getUserRoleByUser(User user);
 }

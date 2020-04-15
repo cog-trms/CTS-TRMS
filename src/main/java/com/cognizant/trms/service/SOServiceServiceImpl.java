@@ -142,10 +142,9 @@ public class SOServiceServiceImpl implements SOService {
 			if (soCandidate != null) {
 				if (soCandidate.isActive()) {
 					CaseCandidate caseCandidate = new CaseCandidate().setSoCaseId(caseId)
-							.setSoMappedCandidateId(candidateId).setStatus(CASE_CANDIDATE_STATUS.MAPPED.getValue()); // Setting
-																														// the
-																														// initial
-																														// value
+							.setCandidateId(candidateId)
+							.setStatus(CASE_CANDIDATE_STATUS.MAPPED.getValue()); // Setting the initial value
+
 					caseCandidate = caseCandidateRepository.save(caseCandidate);
 
 					// START - Updating the CASE_CANDIDATE ref in CASE collection
@@ -178,7 +177,7 @@ public class SOServiceServiceImpl implements SOService {
 		// ***** VARA - TODO-END *****//
 		Optional<CaseCandidate> existingCaseCandidate = caseCandidateRepository.findById(caseCadidateId);
 		if (existingCaseCandidate.isPresent()) {
-			if (existingCaseCandidate.get().getSoMappedCandidateId().equals(candidateId)) {
+			if (existingCaseCandidate.get().getCandidateId().equals(candidateId)) {
 				Interview interview = new Interview().setCaseCandidateId(caseCadidateId).setCandidateId(candidateId)
 						.setInterviewStatus(CASE_CANDIDATE_INTERVIEW_STATUS.PANEL_ASSIGNED.getValue())
 						.setPanelUserId(mapCandidateToInterview.getPanelUserId());
@@ -204,7 +203,7 @@ public class SOServiceServiceImpl implements SOService {
 
 	@Override
 	public CaseCandidateDto updateCandidateStatus(CaseCandidateStatusUpdateRequest caseCandidateStatusUpdateRequest) {
-		String caseCandidateId = caseCandidateStatusUpdateRequest.getId();
+		String caseCandidateId = caseCandidateStatusUpdateRequest.getCaseCandidateId();
 		String caseCandidateStaus = caseCandidateStatusUpdateRequest.getStatus();
 		Optional<CaseCandidate> existingCC = caseCandidateRepository.findById(caseCandidateId);
 		if (existingCC.isPresent()) {
@@ -212,6 +211,24 @@ public class SOServiceServiceImpl implements SOService {
 					Stream.of(CASE_CANDIDATE_INTERVIEW_STATUS.values())
 							.anyMatch(v -> v.getValue().equals(caseCandidateStaus))
 			) {
+				Optional<SOCase> existingCase = soCaseRepository.findById(existingCC.get().getSoCaseId());
+				// Increment the No.of.Selected in CASE entity.
+				if (caseCandidateStaus.equals(CASE_CANDIDATE_INTERVIEW_STATUS.SELECTED)) {
+					if (existingCase.isPresent()) {
+
+						existingCase.get().setNumberOfPosition(existingCase.get().getNumberOfSelected() + 1);
+						soCaseRepository.save(existingCase.get());
+					}
+				}
+				// Decrement the No.of.Selected in CASE entity.
+				else if (existingCC.get().getStatus().equals(CASE_CANDIDATE_INTERVIEW_STATUS.SELECTED) &&
+						(!caseCandidateStaus.equals(CASE_CANDIDATE_INTERVIEW_STATUS.SELECTED))) {
+					if (existingCase.isPresent()) {
+						existingCase.get().setNumberOfPosition(existingCase.get().getNumberOfSelected() - 1);
+						soCaseRepository.save(existingCase.get());
+					}
+
+				}
 				existingCC.get().setStatus(caseCandidateStatusUpdateRequest.getStatus());
 				return modelMapper.map(caseCandidateRepository.save(existingCC.get()), CaseCandidateDto.class);
 			}
@@ -238,6 +255,31 @@ public class SOServiceServiceImpl implements SOService {
 		}
 		throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.BAD_REQUEST,
 				"CaseCandidate id " + caseCandidateId + " is not found");
+	}
+
+	//TODO - This operation can't be UNDO. So appropriate validation has to happen at UI and in Service
+	// TODO - Only on HIRING_MANAGER of this SO can perform this activity
+	// TODO - (For now just checked whether logged in user is HM, but didn't check whether he is HM for this SO)
+	@Override
+	public CaseCandidateDto onboardCaseCandidate(String caseCandidateId) {
+		if (TRMSUtil.isHiringManager()) {
+			Optional<CaseCandidate> existingCC = caseCandidateRepository.findById(caseCandidateId);
+			if (existingCC.isPresent()) {
+				Optional<SOCase> existingCase = soCaseRepository.findById(existingCC.get().getSoCaseId());
+				if (existingCase.isPresent()) {
+					existingCase.get().setNumberOfFilled(existingCase.get().getNumberOfFilled() + 1);
+					soCaseRepository.save(existingCase.get());
+				}
+				existingCC.get().setOnBoarded(true);
+				return modelMapper.map(caseCandidateRepository.save(existingCC.get()), CaseCandidateDto.class);
+			}
+			throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.BAD_REQUEST,
+					"CaseCandidate id " + caseCandidateId + " is not found");
+
+		}
+		throw exceptionWithId(EntityType.CASE_CANDIDATE, ExceptionType.ACCESS_DENIED,
+				"Only Hiring Manager can perform this activity");
+
 	}
 
 

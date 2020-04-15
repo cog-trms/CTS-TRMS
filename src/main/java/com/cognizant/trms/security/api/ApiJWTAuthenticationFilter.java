@@ -60,6 +60,7 @@ public class ApiJWTAuthenticationFilter extends UsernamePasswordAuthenticationFi
         if (auth.getPrincipal() != null) {
             org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) auth.getPrincipal();
             String login = user.getUsername();
+
             req.setAttribute("username", user.getUsername()); // TODO: Set the user name in the request scope
             if (login != null && login.length() > 0) {
                 Claims claims = Jwts.claims().setSubject(login);
