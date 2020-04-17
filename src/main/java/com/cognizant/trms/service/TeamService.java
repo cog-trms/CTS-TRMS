@@ -32,4 +32,6 @@ public interface TeamService {
 
 	ProgramDto getTeamsListByProgramId(String programId) throws JsonProcessingException;
 
+	TeamDto addTeamMembersToTeam(TeamCreateRequest teamCreateRequest) throws JsonProcessingException;
+
 }
