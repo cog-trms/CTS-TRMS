@@ -27,13 +27,9 @@ import com.cognizant.trms.dto.model.user.TeamDto;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
-import com.cognizant.trms.model.user.Account;
 import com.cognizant.trms.model.user.Program;
-import com.cognizant.trms.model.user.Role;
 import com.cognizant.trms.model.user.Team;
 import com.cognizant.trms.model.user.User;
-import com.cognizant.trms.model.user.UserRole;
-import com.cognizant.trms.model.user.UserRoles;
 import com.cognizant.trms.repository.user.ProgramRepository;
 import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.TeamRepository;
@@ -100,8 +96,7 @@ public class TeamServiceImpl implements TeamService {
 
 		if (prog.isPresent()) {
 			Program program = prog.get();
-			Optional<Team> team = Optional
-					.ofNullable(teamRepository.findByteamNameAndProgramId(teamName, program));
+			Optional<Team> team = Optional.ofNullable(teamRepository.findByteamNameAndProgramId(teamName, program));
 
 			if (!team.isPresent()) {
 				Team teamModel = new Team().setTeamName(teamName.toLowerCase()).setProgram(program);
@@ -119,40 +114,84 @@ public class TeamServiceImpl implements TeamService {
 		}
 		throw exceptionWithId(EntityType.PROGRAM, ExceptionType.BAD_REQUEST, programId);
 	}
-	
-	
+
+	@Override
+	public TeamDto updateTeam(TeamCreateRequest teamCreateRequest) throws JsonProcessingException {
+		String teamId = teamCreateRequest.getId();
+		String programId = teamCreateRequest.getProgramId();
+		String teamName = teamCreateRequest.getTeamName().toLowerCase();
+		String[] teamMemberIdsSelected = teamCreateRequest.getTeamMembers();
+
+		Optional<Team> team = teamRepository.findById(teamId);
+
+		if (team.isPresent()) {
+			Team updatedTeam = team.get();
+			Optional<Program> prog = programRepository.findById(programId);
+			if (prog.isPresent()) {
+				Program program = prog.get();
+				if (!teamName.equals(team.get().getTeamName().toLowerCase())) {
+					Optional<Team> teamWithName = Optional
+							.ofNullable(teamRepository.findByteamNameAndProgramId(teamName, program));
+					if (teamWithName.isPresent()) {
+						throw exceptionWithId(EntityType.TEAM, ExceptionType.DUPLICATE_ENTITY, teamName,
+								"Duplicate team name under the same program");
+					}
+				}
+				if (teamMemberIdsSelected != null) {
+					Set<String> teamMembers = Arrays.stream(teamMemberIdsSelected).collect(Collectors.toSet());
+					Set<User> teamMembersSet = getAllTeamMembers(teamMembers);
+					if (!teamMembersSet.isEmpty()) {
+
+						updatedTeam.setTeamMembers(teamMembersSet);
+					}
+				}
+				updatedTeam.setTeamName(teamName).setProgram(program);
+				updatedTeam = teamRepository.save(updatedTeam);
+				return TeamMapper.toTeamDto(updatedTeam);
+
+			}
+			throw exceptionWithId(EntityType.PROGRAM, ExceptionType.DUPLICATE_ENTITY, programId);
+
+		}
+		throw exceptionWithId(EntityType.TEAM, ExceptionType.BAD_REQUEST, teamId);
+
+	}
+
 	/**
 	 * Add Team members to existing team
 	 */
 	@Override
 	public TeamDto addTeamMembersToTeam(TeamCreateRequest teamCreateRequest) throws JsonProcessingException {
 		String teamId = teamCreateRequest.getId();
-		// String teamName = teamCreateRequest.getTeamName().toLowerCase();
+		String programId = teamCreateRequest.getProgramId();
 		String[] teamMemberIdsSelected = teamCreateRequest.getTeamMembers();
 
-		Optional<Team> existingTeam = teamRepository.findById(teamId);
+		Optional<Program> prog = programRepository.findById(programId);
+		if (prog.isPresent()) {
+			Team existingTeam = teamRepository.findByIdAndProgramId(teamId, prog.get());
 
-		if (existingTeam.isPresent()) {
-			if (teamMemberIdsSelected != null) {
-				Set<String> teamMembers = Arrays.stream(teamMemberIdsSelected).collect(Collectors.toSet());
-				Set<User> teamMembersSet = getAllTeamMembers(teamMembers);
-				if (!teamMembersSet.isEmpty()) {
+			if (existingTeam != null) {
+				if (teamMemberIdsSelected != null) {
+					Set<String> teamMembers = Arrays.stream(teamMemberIdsSelected).collect(Collectors.toSet());
+					Set<User> teamMembersSet = getAllTeamMembers(teamMembers);
+					if (!teamMembersSet.isEmpty()) {
 
-					if (existingTeam.get().getTeamMembers() == null) {
-						existingTeam.get().setTeamMembers(new HashSet<>());
+						if (existingTeam.getTeamMembers() == null) {
+							existingTeam.setTeamMembers(new HashSet<>());
+						}
+						existingTeam.getTeamMembers().addAll(teamMembersSet);
+						return TeamMapper.toTeamDto(teamRepository.save(existingTeam));
 					}
-					existingTeam.get().getTeamMembers().addAll(teamMembersSet);
-					return TeamMapper.toTeamDto(teamRepository.save(existingTeam.get()));
+					throw exceptionWithId(EntityType.USER, ExceptionType.BAD_REQUEST, teamId);
 				}
-				throw exceptionWithId(EntityType.USER, ExceptionType.BAD_REQUEST, teamId);
+
 			}
+			throw exceptionWithId(EntityType.TEAM, ExceptionType.ENTITY_NOT_FOUND, teamId);
 
 		}
-		throw exceptionWithId(EntityType.TEAM, ExceptionType.BAD_REQUEST, teamId);
-
+		throw exceptionWithId(EntityType.PROGRAM, ExceptionType.BAD_REQUEST, programId);
 	}
 	
-
 	@Transactional(readOnly = true)
 	public Set<User> getAllTeamMembers(Set<String> teamMemberIds) {
 		Iterable<User> iterable = userRepository.findAllById(teamMemberIds);
@@ -160,11 +199,7 @@ public class TeamServiceImpl implements TeamService {
 		return teamSet;
 	}
 
-	@Override
-	public TeamDto updateTeam(TeamCreateRequest TeamCreateRequest) throws JsonProcessingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	/**
 	 * @param teamId
@@ -241,24 +276,6 @@ public class TeamServiceImpl implements TeamService {
 			return TeamMapper.toTeamDto(team.get());
 		}
 		throw exceptionWithId(EntityType.TEAM, ExceptionType.BAD_REQUEST, Id);
-	}
-
-	/***
-	 * Insert entry at userrole TODO: Move to common utility
-	 * 
-	 * @param user
-	 * @param account
-	 * @param program
-	 */
-	private void createUserRoles(User user, Account account, Program program, Team team)
-			throws JsonProcessingException {
-		Role role = roleRepository.findByRole(UserRoles.PROGRAM_MANAGER.name());
-		UserRole userRole = new UserRole().setUser(user).setAccount(account).setProgram(program).setTeam(team)
-				.setRole(role);
-		userRoleRepository.save(userRole);
-
-		//user.setRoles(new HashSet<>(Arrays.asList(role)));
-		userRepository.save(user);
 	}
 
 	private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id,
