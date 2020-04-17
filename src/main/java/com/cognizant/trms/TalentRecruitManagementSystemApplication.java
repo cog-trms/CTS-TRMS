@@ -92,6 +92,16 @@ public class TalentRecruitManagementSystemApplication {
 						//.setRoles(new HashSet<>(Arrays.asList(adminRole)));
 				userRepository.save(admin);
 			}
+			List<UserRole> adminUserRoles = userRoleRepository.findByUserIdAndRoleId(admin.getId(),
+					adminRole.getId());
+			if (adminUserRoles.isEmpty()) {
+				UserRole adminUserRole = new UserRole()
+						// .setUserId(hiringManager.getId())
+						// .setRoleId(hmRole.getId())
+						.setUser(admin)
+						.setRole(adminRole);
+				userRoleRepository.save(adminUserRole);
+			}
 
 //            UserRole adminUserRole = new UserRole()
 //                    .setRoleId(adminRole.getId())
