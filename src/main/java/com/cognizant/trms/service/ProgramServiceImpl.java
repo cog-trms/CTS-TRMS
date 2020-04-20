@@ -7,8 +7,7 @@ import java.util.Set;
 
 import com.cognizant.trms.dto.model.user.ProgramDto;
 
-import java.util.Arrays;
-import java.util.HashSet;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
@@ -214,7 +213,7 @@ public class ProgramServiceImpl implements ProgramService {
 		userRoleRepository.save(userRole);
 
 		//user.setRoles(new HashSet<>(Arrays.asList(role)));
-		userRepository.save(user);
+		//userRepository.save(user);
 	}
 
 	/**
@@ -235,7 +234,7 @@ public class ProgramServiceImpl implements ProgramService {
 			existingUserRole.setUser(user);
 			userRoleRepository.save(existingUserRole);
 			//user.setRoles(new HashSet<>(Arrays.asList(role)));
-			userRepository.save(user);
+			//userRepository.save(user);
 		}
 
 	}

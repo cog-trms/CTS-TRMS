@@ -16,8 +16,12 @@ public interface UserRoleRepository extends MongoRepository<UserRole, String> {
 	UserRole findByUserIdAndRoleIdAndAccount(String userId, String roleId, Account account);
 
 	UserRole findByRoleIdAndAccountAndProgram(String roleId, Account account, Program program);
+	
+	UserRole findByRoleIdAndAccountAndProgramAndTeam(String roleId, Account account, Program program,Team team);
 
 	UserRole findByUserIdAndRoleIdAndAccountAndProgram(String userId, String roleId, Account account, Program program);
+	
+	UserRole findByUserIdAndRoleIdAndAccountAndProgramAndTeam(String userId, String roleId, Account account, Program program,Team team);
 
 	List<UserRole> findByAccount(Account account);
 
@@ -26,4 +30,10 @@ public interface UserRoleRepository extends MongoRepository<UserRole, String> {
 	List<UserRole> findByTeam(Team team);
 
 	List<UserRole> findByUser(User user);
+	
+	List<UserRole> findAccountByUser(User user);
+	
+	List<UserRole> findProgramByUser(User user);
+	
+
 }

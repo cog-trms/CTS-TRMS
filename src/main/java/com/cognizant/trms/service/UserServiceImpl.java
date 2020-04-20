@@ -250,4 +250,6 @@ public class UserServiceImpl implements UserService {
     private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id, String... args) {
         return TRMSException.throwExceptionWithId(entityType, exceptionType, id, args);
     }
+
+
 }
