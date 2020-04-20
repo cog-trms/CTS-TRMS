@@ -12,9 +12,12 @@ import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.opportunity.*;
+import com.cognizant.trms.model.user.User;
+import com.cognizant.trms.model.user.UserRole;
 import com.cognizant.trms.repository.opportunity.*;
 import com.cognizant.trms.repository.user.CandidateRepository;
 import com.cognizant.trms.repository.user.UserRepository;
+import com.cognizant.trms.repository.user.UserRoleRepository;
 import com.cognizant.trms.util.TRMSUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,15 +25,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-
 import org.springframework.stereotype.Component;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,6 +59,9 @@ public class SOServiceServiceImpl implements SOService {
 
 	@Autowired
 	CandidateRepository candidateRepository;
+	
+	@Autowired
+	UserRepository userRepository;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -66,6 +71,13 @@ public class SOServiceServiceImpl implements SOService {
 
 	@Autowired
 	InterviewRepository interviewRepository;
+	
+	@Autowired
+	UserService userService;
+	
+	
+	@Autowired
+	UserRoleRepository userRoleRepository;
 
 
 	@Override
@@ -295,21 +307,97 @@ public class SOServiceServiceImpl implements SOService {
 
 
 	@Override
-	public List<SODto> getSOByLoginUser() throws JsonProcessingException {
+	public Set<SODto> getSOByLoginUser() throws JsonProcessingException {
+
+		// Get logged in userName
 		String username = TRMSUtil.loginUserName();
-		log.debug("loginUserName" + username);
 
+		// Get logged in user object
+		Optional<User> user = Optional.ofNullable(userRepository.findByEmail(username.toLowerCase()));
 
-		// TODO: Verify whether logged in USER have HIRING_MANAGER/PROGRAM_MANAGER role
+		// Get logged in user roles
+		List<String> userRoleList = userService.getUserRoleByUser(user.get());
+		if (userRoleList != null) {
+			userRoleList.stream().distinct().collect(Collectors.toList());
+		}
 
-		List<SO> SOList = soRepository.findByCreatedBy(username);
+		// Find logged in user eligible teamIds
+		Set<String> teamSet = new HashSet<>();
+		Set<SO> SOList = new HashSet<>();
+
+		if (userRoleList.contains("HIRING_MANAGER")) {
+			log.debug("HIRING_MANAGER");
+			teamSet = SOTeamIdsByAccount(user.get());
+			SOList = getAllSO(teamSet);
+			log.debug("SOLISt size" + SOList.size());
+		} else if (userRoleList.contains("PROGRAM_MANAGER")) {
+			log.debug("PROGRAM_MANAGER");
+			teamSet = SOTeamIdsByProgram(user.get());
+			SOList = getAllSO(teamSet);
+			log.debug("SOLISt size" + SOList.size());
+		}
 
 		if (!SOList.isEmpty()) {
 			return SOList.stream().filter(so -> so != null).map(so -> SOMapper.toSODtoNoCase(so))
-					.collect(Collectors.toList());
+					.collect(Collectors.toSet());
 
 		}
 		throw exceptionWithId(EntityType.SERVICEORDER, ExceptionType.ENTITY_NOT_FOUND, username);
+	}
+	
+	/**
+	 * Find the list of teams based on program
+	 * @param user
+	 * @return
+	 */
+	public Set<String> SOTeamIdsByProgram(User user) {
+		List<UserRole> userRoleProgSet = userRoleRepository.findProgramByUser(user);
+		log.debug(userRoleProgSet.size());
+		Set<String> soTeamSet = new HashSet<>();
+		userRoleProgSet.forEach(userRole -> {
+			log.debug("ProgramId:" + userRole.getProgram().getId());
+			List<UserRole> userRoleTeamSet = userRoleRepository.findByProgram(userRole.getProgram());
+			userRoleTeamSet.forEach(userTeamRole -> {
+				if (userTeamRole.getTeam() != null) {
+					log.debug(("teamId:" + userTeamRole.getTeam().getId()));
+					soTeamSet.add(userTeamRole.getTeam().getId());
+				}
+			});
+			log.debug("SO team List" + soTeamSet.toString());
+		});
+		return soTeamSet;
+	}
+	
+	/**
+	 * Find the list of teams based on account
+	 * @param user
+	 * @return
+	 */
+	public Set<String> SOTeamIdsByAccount(User user) {
+		List<UserRole> userRoleAccSet = userRoleRepository.findAccountByUser(user);
+		log.debug(userRoleAccSet.size());
+		Set<String> soTeamSet = new HashSet<>();
+		userRoleAccSet.forEach(userRole -> {
+			log.debug("AccountId:" + userRole.getAccount().getId());
+			List<UserRole> userRoleTeamSet = userRoleRepository.findByAccount(userRole.getAccount());
+			userRoleTeamSet.forEach(userTeamRole -> {
+				if (userTeamRole.getTeam() != null) {
+					log.debug(("teamId:" + userTeamRole.getTeam().getId()));
+					soTeamSet.add(userTeamRole.getTeam().getId());
+				}
+			});
+			log.debug("SO team List" + soTeamSet.toString());
+		});
+		return soTeamSet;
+	}
+	
+	@Transactional(readOnly = true)
+	public Set<SO> getAllSO(Set<String> teamIds) {
+		Set<SO> SOSet = new HashSet<SO>();
+		teamIds.forEach(teamId -> {
+			SOSet.addAll(soRepository.findByTeamId(teamId));
+		});
+		return SOSet;
 	}
 
 	@Override

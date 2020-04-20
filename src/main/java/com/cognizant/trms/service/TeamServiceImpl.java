@@ -27,9 +27,13 @@ import com.cognizant.trms.dto.model.user.TeamDto;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
+import com.cognizant.trms.model.user.Account;
 import com.cognizant.trms.model.user.Program;
+import com.cognizant.trms.model.user.Role;
 import com.cognizant.trms.model.user.Team;
 import com.cognizant.trms.model.user.User;
+import com.cognizant.trms.model.user.UserRole;
+import com.cognizant.trms.model.user.UserRoles;
 import com.cognizant.trms.repository.user.ProgramRepository;
 import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.TeamRepository;
@@ -108,6 +112,7 @@ public class TeamServiceImpl implements TeamService {
 					}
 				}
 				teamModel = teamRepository.save(teamModel);
+				createUserRoles(program.getProgramMgr(), program.getAccount(), program,teamModel);
 				return TeamMapper.toTeamDto(teamModel);
 			}
 			throw exceptionWithId(EntityType.TEAM, ExceptionType.DUPLICATE_ENTITY, teamName);
@@ -147,6 +152,7 @@ public class TeamServiceImpl implements TeamService {
 				}
 				updatedTeam.setTeamName(teamName).setProgram(program);
 				updatedTeam = teamRepository.save(updatedTeam);
+				updateUserRoles(program.getProgramMgr(), program.getAccount(), program,updatedTeam);
 				return TeamMapper.toTeamDto(updatedTeam);
 
 			}
@@ -281,6 +287,45 @@ public class TeamServiceImpl implements TeamService {
 	private RuntimeException exceptionWithId(EntityType entityType, ExceptionType exceptionType, String id,
 			String... args) {
 		return TRMSException.throwExceptionWithId(entityType, exceptionType, id, args);
+	}
+	
+	/***
+	 * Insert entry at userrole TODO: Move to common utility
+	 * 
+	 * @param user
+	 * @param account
+	 * @param program
+	 */
+	private void createUserRoles(User user, Account account, Program program,Team team) {
+		Role role = roleRepository.findByRole(UserRoles.TEAM_MEMBER.name());
+		UserRole userRole = new UserRole().setUser(user).setAccount(account).setProgram(program).setRole(role).setTeam(team);
+		userRoleRepository.save(userRole);
+
+		//user.setRoles(new HashSet<>(Arrays.asList(role)));
+		//userRepository.save(user);
+	}
+
+	/**
+	 * TODO: Move to common utility
+	 * 
+	 * @param user
+	 * @param account
+	 * @param program
+	 * @throws JsonProcessingException
+	 */
+	private void updateUserRoles(User user, Account account, Program program,Team team) throws JsonProcessingException {
+		Role role = roleRepository.findByRole(UserRoles.TEAM_MEMBER.name());
+		UserRole existingUserRole = userRoleRepository.findByRoleIdAndAccountAndProgramAndTeam(role.getId(), account, program,team);
+
+		if (existingUserRole == null) {
+			createUserRoles(user, account, program,team);
+		} else {
+			existingUserRole.setUser(user);
+			userRoleRepository.save(existingUserRole);
+			//user.setRoles(new HashSet<>(Arrays.asList(role)));
+			//userRepository.save(user);
+		}
+
 	}
 
 }

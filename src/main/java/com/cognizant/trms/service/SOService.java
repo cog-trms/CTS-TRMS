@@ -11,11 +11,12 @@ import com.cognizant.trms.dto.model.opportunity.SODto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SOService {
 	SODto createSO(SOCreateRequest soCreateRequest) throws JsonProcessingException;
 
-	List<SODto> getSOByLoginUser() throws JsonProcessingException;
+	Set<SODto> getSOByLoginUser() throws JsonProcessingException;
 
 	SODto getCasesBySO(String soId) throws JsonProcessingException;
 
