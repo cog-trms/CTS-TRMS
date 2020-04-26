@@ -1,5 +1,7 @@
 package com.cognizant.trms.dto.model.opportunity;
 
+import java.util.Date;
+
 import com.cognizant.trms.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,5 +28,11 @@ public class InterviewDto {
     //private User panel;
     private String panelUserId;
     private String feedback;
+    private Date interviewDate;
     private String interviewStatus;
+    
+    private String createdBy;
+	private Date createdDate;
+	private String lastModifiedBy;
+	private Date lastModifiedDate;
 }

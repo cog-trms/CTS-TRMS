@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -28,5 +29,10 @@ public class CaseCandidateDto {
     private String status;
     private boolean onBoarded;
     List<InterviewDto> interviews;
+    
+    private String createdBy;
+	private Date createdDate;
+	private String lastModifiedBy;
+	private Date lastModifiedDate;
 
 }

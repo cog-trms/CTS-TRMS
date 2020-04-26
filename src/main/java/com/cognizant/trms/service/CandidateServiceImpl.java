@@ -7,13 +7,12 @@ import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
 import com.cognizant.trms.model.opportunity.Candidate;
 import com.cognizant.trms.repository.user.CandidateRepository;
+import com.cognizant.trms.util.TRMSUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     @Override
     public List<CandidateDto> getAllCandidates() {
-        return candidateRepository.findAll()
+        return candidateRepository.findByIsActive(true)
                 .stream()
                 .filter(Objects::nonNull)
                 .map(candidate -> modelMapper.map(candidate, CandidateDto.class))
@@ -68,22 +67,38 @@ public class CandidateServiceImpl implements CandidateService {
             return modelMapper.map(candidateRepository.save(candidate),CandidateDto.class);
        }
 
-        throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.ENTITY_NOT_FOUND, candidateId);
+        throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.BAD_REQUEST, candidateId);
     }
 
     @Override
     public CandidateDto getCandidateById(String id) {
-        return null;
+    	Optional<Candidate> candidate = candidateRepository.findById(id);
+    	if(candidate.isPresent()) {
+    		return modelMapper.map(candidate.get(),CandidateDto.class);
+    		
+    	}throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.BAD_REQUEST, id);
     }
 
     @Override
     public CandidateDto getCandidateByEmail(String email) {
-        return null;
+    	Candidate candidate = candidateRepository.findByCandidateEmail(email);
+    	if(candidate!=null) {
+    		return modelMapper.map(candidate,CandidateDto.class);
+    	}throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.BAD_REQUEST, email);
     }
 
     @Override
     public boolean deleteCandidateById(String id) {
-        return false;
+		if (TRMSUtil.isAdmin()) {
+			Optional<Candidate> candidate = candidateRepository.findById(id);
+			if (candidate.isPresent()) {
+				candidateRepository.deleteById(id);
+				return true;
+			}
+			throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.BAD_REQUEST, id);
+		}
+		throw exceptionWithId(EntityType.CANDIDATE, ExceptionType.ACCESS_DENIED,
+				" Only an admin user can perform this operation");
     }
 
     private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {

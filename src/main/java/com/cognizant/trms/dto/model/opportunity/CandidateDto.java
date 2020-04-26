@@ -1,5 +1,7 @@
 package com.cognizant.trms.dto.model.opportunity;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -25,4 +27,8 @@ public class CandidateDto {
     private String firstName;
     private String lastName;
     private boolean isActive;
+    private String createdBy;
+	private Date createdDate;
+	private String lastModifiedBy;
+	private Date lastModifiedDate;
 }

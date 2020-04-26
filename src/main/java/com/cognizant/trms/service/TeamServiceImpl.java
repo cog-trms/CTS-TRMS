@@ -3,6 +3,7 @@
  */
 package com.cognizant.trms.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import com.cognizant.trms.dto.model.user.TeamDto;
 import com.cognizant.trms.exception.EntityType;
 import com.cognizant.trms.exception.ExceptionType;
 import com.cognizant.trms.exception.TRMSException;
+import com.cognizant.trms.model.opportunity.SO;
 import com.cognizant.trms.model.user.Account;
 import com.cognizant.trms.model.user.Program;
 import com.cognizant.trms.model.user.Role;
@@ -34,6 +36,7 @@ import com.cognizant.trms.model.user.Team;
 import com.cognizant.trms.model.user.User;
 import com.cognizant.trms.model.user.UserRole;
 import com.cognizant.trms.model.user.UserRoles;
+import com.cognizant.trms.repository.user.AccountRepository;
 import com.cognizant.trms.repository.user.ProgramRepository;
 import com.cognizant.trms.repository.user.RoleRepository;
 import com.cognizant.trms.repository.user.TeamRepository;
@@ -62,6 +65,9 @@ public class TeamServiceImpl implements TeamService {
 
 	@Autowired
 	private TeamRepository teamRepository;
+	
+	@Autowired
+	private AccountRepository accountRepository;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -246,6 +252,40 @@ public class TeamServiceImpl implements TeamService {
 		}
 		throw exceptionWithId(EntityType.PROGRAM, ExceptionType.BAD_REQUEST, programId);
 	}
+	
+	/**
+	 *
+	 * @param AccountId
+	 * @return List of Teams
+	 */
+	@Override
+	public List<TeamDto> getTeamsByAccountId(String accountId) throws JsonProcessingException {
+		Optional<Account> acc = accountRepository.findById(accountId);
+		if (acc.isPresent()) {
+			Account account = acc.get();
+			List<Program> programs = programRepository.findByAccount(account);
+			if (!programs.isEmpty()) {
+				List<Team> teams = getAllTeams(programs);
+				log.debug("Team count"+teams.size());
+				if(!teams.isEmpty()) {
+				return teams.stream().filter(team -> team != null).map(team -> TeamMapper.toTeamDto(team))
+						.collect(Collectors.toList());
+			}throw exceptionWithId(EntityType.TEAM, ExceptionType.ENTITY_NOT_FOUND, accountId);
+			}
+			throw exceptionWithId(EntityType.PROGRAM, ExceptionType.ENTITY_NOT_FOUND, accountId);
+		}
+		throw exceptionWithId(EntityType.ACCOUNT, ExceptionType.BAD_REQUEST, accountId);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Team> getAllTeams(List<Program> programs) {
+		List<Team> teamSet = new ArrayList<Team>();
+		programs.forEach(program -> {
+			teamSet.addAll(teamRepository.findByProgram(program));
+		});
+		return teamSet;
+	}
+	
 	
 	/**
 	 *

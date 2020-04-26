@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.cognizant.trms.controller.v1.request.ProgramUpateRequest;
 import com.cognizant.trms.controller.v1.request.TeamCreateRequest;
-import com.cognizant.trms.dto.model.user.ProgramDto;
 import com.cognizant.trms.dto.model.user.TeamDto;
 import com.cognizant.trms.dto.response.Response;
 import com.cognizant.trms.service.TeamService;
@@ -79,7 +76,7 @@ public class TeamController {
 	@PatchMapping("/team/teamMember")
 	@ApiOperation(value = "API handler for updating team details", authorizations = {
 			@Authorization(value = "apiKey") })
-	public TeamDto updateProgram(@Valid @RequestBody TeamCreateRequest teamCreateRequest)
+	public TeamDto updateTeam(@Valid @RequestBody TeamCreateRequest teamCreateRequest)
 			throws JsonProcessingException {
 		log.debug("Inside updateTeam API Method");
 		return teamService.updateTeam(teamCreateRequest);
@@ -99,10 +96,18 @@ public class TeamController {
 
 	@GetMapping("/team/programId/{programId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
-	public Response getAccountsByBuId(@PathVariable("programId") String programId) throws JsonProcessingException {
+	public Response getTeamsByProgramId(@PathVariable("programId") String programId) throws JsonProcessingException {
 
 		return Response.ok().setPayload(teamService.getTeamsListByProgramId(programId));
 	}
+	
+	@GetMapping("/team/accountId/{accountId}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	public Response getTeamsByAccountId(@PathVariable("accountId") String accountId) throws JsonProcessingException {
+
+		return Response.ok().setPayload(teamService.getTeamsByAccountId(accountId));
+	}
+
 
 	/**
 	 * 
@@ -111,7 +116,7 @@ public class TeamController {
 	 */
 	@DeleteMapping("/team/{id}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
-	public Response deleteProgram(@PathVariable("id") String id) {
+	public Response deleteTeam(@PathVariable("id") String id) {
 		return Response.ok().setPayload(teamService.deleteTeam(id));
 	}
 

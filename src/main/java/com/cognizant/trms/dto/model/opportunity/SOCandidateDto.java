@@ -1,5 +1,7 @@
 package com.cognizant.trms.dto.model.opportunity;
 
+import java.util.Date;
+
 import com.cognizant.trms.model.opportunity.Candidate;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,4 +28,9 @@ public class SOCandidateDto {
 
     private CandidateDto candidate;
     private boolean isActive;
+    
+    private String createdBy;
+	private Date createdDate;
+	private String lastModifiedBy;
+	private Date lastModifiedDate;
 }
