@@ -30,6 +30,8 @@ public class SOCase {
     private String status;
     private Integer numberOfSelected;
     private Integer numberOfFilled;
+    private String jobDescription;
+    
     @DBRef(lazy = true)
     private List<CaseCandidate> caseCandidates;
 
@@ -44,6 +46,5 @@ public class SOCase {
 
     @LastModifiedDate
     private Date lastModifiedDate;
-
-
+ 
 }

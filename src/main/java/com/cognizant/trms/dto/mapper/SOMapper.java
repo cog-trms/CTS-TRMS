@@ -23,7 +23,8 @@ public class SOMapper {
 	public static SOCase toCaseReqToCase(CaseCreateRequest caseCreateRequest, String soId) {
 
 		return new SOCase().setLevel(caseCreateRequest.getLevel()).setSkill(caseCreateRequest.getSkill()).setSoId(soId)
-				.setNumberOfPosition(caseCreateRequest.getNumberOfPosition());
+				.setNumberOfPosition(caseCreateRequest.getNumberOfPosition())
+				.setJobDescription(caseCreateRequest.getJobDescription());
 
 	}
 

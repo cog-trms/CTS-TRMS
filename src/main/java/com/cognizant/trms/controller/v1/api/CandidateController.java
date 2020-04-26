@@ -14,17 +14,10 @@ import io.swagger.annotations.Authorization;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.server.ResponseStatusException;
-
 import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 /*
     Author: Aravindan Dandapani
@@ -42,12 +35,30 @@ public class CandidateController {
 
     @GetMapping("/candidate/all")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response getAllAccount() throws JsonProcessingException {
+    public Response getAllCandidates() throws JsonProcessingException {
 
         //This should be restricted only to TAG
         return Response
                 .ok()
                 .setPayload(candidateService.getAllCandidates());
+    }
+    
+    @GetMapping("/candidate/candidateId/{candidateId}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getCandidateById(@PathVariable("candidateId") String candidateId) throws JsonProcessingException {
+
+        return Response
+                .ok()
+                .setPayload(candidateService.getCandidateById(candidateId));
+    }
+    
+    @GetMapping("/candidate/candidateEmail/{candidateEmail}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response getCandidateByEmail(@PathVariable("candidateEmail") String candidateEmail) throws JsonProcessingException {
+
+        return Response
+                .ok()
+                .setPayload(candidateService.getCandidateByEmail(candidateEmail));
     }
 
     @PostMapping("/candidate")
@@ -63,7 +74,16 @@ public class CandidateController {
                 .setPayload(candidateService.createCandidate(candidateCreateRequest));
     }
 
-
+    /**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@DeleteMapping("/candidate/{id}")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	public Response deleteProgram(@PathVariable("id") String id) {
+		return Response.ok().setPayload(candidateService.deleteCandidateById(id));
+	}
 
 
     @PutMapping("/candidate")

@@ -24,6 +24,8 @@ public class CaseCreateRequest {
     private String level;
     @NotEmpty(message = "{constraints.NotEmpty.message}")
     private Integer numberOfPosition;
+    
+    private String jobDescription;
 
     public CaseCreateRequest(CaseCreateRequest item) {
     }

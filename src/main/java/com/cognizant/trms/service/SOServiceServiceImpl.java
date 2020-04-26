@@ -86,9 +86,6 @@ public class SOServiceServiceImpl implements SOService {
 		if (newSO == null) {
 			newSO = new SO().setServiceOrder(soCreateRequest.getServiceOrder())
 					.setLocation(soCreateRequest.getLocation())
-					// VARA - TODO -- Get the user from token and update the CreatedBy Field //
-					// .setCreatedBy(soCreateRequest.getCreatedBy())
-					// VARA - TODO - END //
 					.setPositionCount(soCreateRequest.getPositionCount()).setTeamId(soCreateRequest.getTeamId());
 			String reqString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(newSO);
 			log.debug("SO Request  " + reqString);
