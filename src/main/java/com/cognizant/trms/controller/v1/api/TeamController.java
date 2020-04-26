@@ -76,7 +76,7 @@ public class TeamController {
 	@PatchMapping("/team/teamMember")
 	@ApiOperation(value = "API handler for updating team details", authorizations = {
 			@Authorization(value = "apiKey") })
-	public TeamDto updateProgram(@Valid @RequestBody TeamCreateRequest teamCreateRequest)
+	public TeamDto updateTeam(@Valid @RequestBody TeamCreateRequest teamCreateRequest)
 			throws JsonProcessingException {
 		log.debug("Inside updateTeam API Method");
 		return teamService.updateTeam(teamCreateRequest);
@@ -96,14 +96,14 @@ public class TeamController {
 
 	@GetMapping("/team/programId/{programId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
-	public Response getAccountsByProgramId(@PathVariable("programId") String programId) throws JsonProcessingException {
+	public Response getTeamsByProgramId(@PathVariable("programId") String programId) throws JsonProcessingException {
 
 		return Response.ok().setPayload(teamService.getTeamsListByProgramId(programId));
 	}
 	
 	@GetMapping("/team/accountId/{accountId}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
-	public Response getAccountsByAccountId(@PathVariable("accountId") String accountId) throws JsonProcessingException {
+	public Response getTeamsByAccountId(@PathVariable("accountId") String accountId) throws JsonProcessingException {
 
 		return Response.ok().setPayload(teamService.getTeamsByAccountId(accountId));
 	}
@@ -116,7 +116,7 @@ public class TeamController {
 	 */
 	@DeleteMapping("/team/{id}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
-	public Response deleteProgram(@PathVariable("id") String id) {
+	public Response deleteTeam(@PathVariable("id") String id) {
 		return Response.ok().setPayload(teamService.deleteTeam(id));
 	}
 
