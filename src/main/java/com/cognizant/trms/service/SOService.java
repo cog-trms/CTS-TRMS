@@ -33,4 +33,6 @@ public interface SOService {
 	boolean deleteCaseCandidate(String caseCandidateId);
 
 	CaseCandidateDto onboardCaseCandidate(String caseCandidateId);
+
+	List<InterviewDto> getInterviewsByPanelUserId(String panelUserId) throws JsonProcessingException;
 }

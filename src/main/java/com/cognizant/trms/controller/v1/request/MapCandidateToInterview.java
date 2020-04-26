@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 import javax.validation.constraints.NotEmpty;
 
 /*
@@ -25,5 +27,6 @@ public class MapCandidateToInterview {
     @NotEmpty(message = "panel user id is empty")
     private String panelUserId;
     private String feedback;
+    private Date interviewDate; 
     private String interviewStatus;
 }

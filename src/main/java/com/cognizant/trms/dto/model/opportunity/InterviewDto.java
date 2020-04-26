@@ -28,6 +28,7 @@ public class InterviewDto {
     //private User panel;
     private String panelUserId;
     private String feedback;
+    private Date interviewDate;
     private String interviewStatus;
     
     private String createdBy;

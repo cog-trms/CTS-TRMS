@@ -68,12 +68,20 @@ public class SOController {
 
 	}
 
+	@GetMapping(path = "/interview/{panelUserId}/interviews", produces = "application/json")
+	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
+	public Response getInterviewsByPanelUserId(@PathVariable("panelUserId") String panelUserId) throws JsonProcessingException {
+		return Response.ok().setPayload(soService.getInterviewsByPanelUserId(panelUserId));
+
+	}
+	
 	@GetMapping(path = "/so/{soId}/cases", produces = "application/json")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
 	public Response getCases(@PathVariable("soId") String soId) throws JsonProcessingException {
 		return Response.ok().setPayload(soService.getCasesBySO(soId));
 
 	}
+
 
 	@GetMapping(path = "/so", produces = "application/json")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })

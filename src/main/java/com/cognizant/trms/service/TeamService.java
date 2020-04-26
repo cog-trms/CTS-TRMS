@@ -4,7 +4,6 @@
 package com.cognizant.trms.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.cognizant.trms.controller.v1.request.TeamCreateRequest;
@@ -33,5 +32,7 @@ public interface TeamService {
 	ProgramDto getTeamsListByProgramId(String programId) throws JsonProcessingException;
 
 	TeamDto addTeamMembersToTeam(TeamCreateRequest teamCreateRequest) throws JsonProcessingException;
+
+	List<TeamDto> getTeamsByAccountId(String accountId) throws JsonProcessingException;
 
 }

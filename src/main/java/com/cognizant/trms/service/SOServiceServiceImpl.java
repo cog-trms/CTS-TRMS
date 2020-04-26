@@ -198,9 +198,11 @@ public class SOServiceServiceImpl implements SOService {
 		Optional<CaseCandidate> existingCaseCandidate = caseCandidateRepository.findById(caseCadidateId);
 		if (existingCaseCandidate.isPresent()) {
 			if (existingCaseCandidate.get().getCandidateId().equals(candidateId)) {
+				//log.debug("InterviewDate"+mapCandidateToInterview.getInterviewDate());
 				Interview interview = new Interview().setCaseCandidateId(caseCadidateId).setCandidateId(candidateId)
 						.setInterviewStatus(CASE_CANDIDATE_INTERVIEW_STATUS.PANEL_ASSIGNED.getValue())
-						.setPanelUserId(mapCandidateToInterview.getPanelUserId());
+						.setPanelUserId(mapCandidateToInterview.getPanelUserId())
+						.setInterviewDate(mapCandidateToInterview.getInterviewDate());
 				interview = interviewRepository.save(interview);
 
 				// START - Updating the INTERVIEW ref in CASE_CANDIDATE collection
@@ -417,6 +419,20 @@ public class SOServiceServiceImpl implements SOService {
 		}
 		throw exceptionWithId(EntityType.SERVICEORDER, ExceptionType.BAD_REQUEST, soId);
 	}
+	
+	@Override
+	public List<InterviewDto> getInterviewsByPanelUserId(String panelUserId) throws JsonProcessingException {
+
+		List<Interview> interviewList = interviewRepository.findByPanelUserId(panelUserId);
+
+			if (!interviewList.isEmpty()) {
+				return interviewList.stream().filter(interview -> interview != null)
+				.map(interview -> new ModelMapper().map(interview,InterviewDto.class))
+				.collect(Collectors.toList());
+			}
+			throw exceptionWithId(EntityType.INTERVIEW, ExceptionType.ENTITY_NOT_FOUND, panelUserId);
+	}
+	
 
 	@Override
 	public List<CaseCandidateDto> getCaseCandidateByCaseId(String soCaseId) throws JsonProcessingException {

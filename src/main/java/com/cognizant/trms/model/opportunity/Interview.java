@@ -26,6 +26,7 @@ public class Interview {
    // private User panel;
     private String panelUserId;
     private String feedback;
+    private Date interviewDate;
     private String interviewStatus;
 
     @CreatedBy
