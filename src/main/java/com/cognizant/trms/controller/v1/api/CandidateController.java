@@ -81,7 +81,7 @@ public class CandidateController {
 	 */
 	@DeleteMapping("/candidate/{id}")
 	@ApiOperation(value = "", authorizations = { @Authorization(value = "apiKey") })
-	public Response deleteProgram(@PathVariable("id") String id) {
+	public Response deleteCandidate(@PathVariable("id") String id) {
 		return Response.ok().setPayload(candidateService.deleteCandidateById(id));
 	}
 
